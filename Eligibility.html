@@ -8,13 +8,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            /* Removed min-h-screen flex items-center justify-center from body */
-            background: linear-gradient(to bottom right, #eff6ff, #e0e7ff); /* bg-gradient-to-br from-blue-50 to-indigo-100 */
-        }
-    </style>
     <!-- React and ReactDOM CDNs -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -23,9 +16,220 @@
     <!-- html2canvas and jspdf CDNs for PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            min-height: 100vh;
+            padding: 2rem 20%;
+            margin: 0;
+        }
+
+        @media (max-width: 1024px) {
+            body {
+                padding: 2rem 10%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem 5%;
+            }
+        }
+        h1 {
+            color: #6366f1;
+        }
+
+       /* h1, h2, h3, h4, h5, h6 {
+            color: #6366f1;
+        }*/
+        /* Custom radio/checkbox styling for better accessibility */
+        input[type="radio"],
+        input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #cbd5e1;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        input[type="radio"] {
+            border-radius: 50%;
+        }
+
+        input[type="checkbox"] {
+            border-radius: 4px;
+        }
+
+        input[type="radio"]:checked {
+            background-color: #6366f1;
+            border-color: #6366f1;
+        }
+
+        input[type="checkbox"]:checked {
+            background-color: #6366f1;
+            border-color: #6366f1;
+        }
+
+        input[type="radio"]:checked::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+        }
+
+        input[type="checkbox"]:checked::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 24 24\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M9.00002 16.17L4.83002 12L3.41002 13.41L9.00002 19L21 7.00002L19.59 5.59002L9.00002 16.17Z\' fill=\'white\'/%3E%3C/svg%3E');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        /* Focus styles for accessibility */
+        input[type="radio"]:focus,
+        input[type="checkbox"]:focus {
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+            border-color: #6366f1;
+        }
+
+        /* Option styling */
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            background-color: white;
+        }
+
+        .option-label:hover {
+            background-color: #f8faff;
+        }
+
+        .option-label.selected {
+            background-color: #eef2ff;
+            border-color: #6366f1;
+        }
+
+        /* Card styling */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        /* Button styles */
+        .btn-primary {
+            background-color: #6366f1;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background-color: #5338ea;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: #6b7280;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5b6373;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary:disabled {
+            background-color: #d1d5db;
+            color: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #6366f1;
+            transition: width 0.3s ease;
+        }
+
+        /* PDF specific styles */
+        .pdf-content {
+            background: white;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+            .pdf-hide {
+                display: none !important;
+            }
+        }
+    </style>
 </head>
-<body class="p-4">
-    <div id="root" class="bg-white p-8 rounded-xl shadow-2xl max-w-3xl w-full mx-auto my-8 border-t-4 border-indigo-500"></div>
+<body>
+    <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
@@ -34,373 +238,569 @@
         const questions = [
           {
             id: 1,
-            text: "What is your age group?",
-            category: "Age Group",
+            text: "Are you currently receiving treatment for your condition?",
+            type: "single",
+            category: "Current Treatment Status",
             options: [
-              { text: "Under 18 years old", answerText: "Under 18 years old", result: "age_contraindication" },
-              { text: "18-65 years old", answerText: "18-65 years old", nextQuestion: 2 },
-              { text: "Over 65 years old", answerText: "Over 65 years old", nextQuestion: 2 },
+              { text: "Yes, I am currently on treatment", answerText: "On treatment" },
+              { text: "No, I am not currently on treatment", answerText: "Not on treatment" },
+              { text: "I have tried treatments before but stopped", answerText: "Tried but stopped" },
             ],
           },
           {
             id: 2,
-            text: "Have you been diagnosed with Condition Y?",
-            category: "Diagnosis Status",
+            text: "Which of the following medications have you tried? (Select all that apply)",
+            type: "multiple",
+            category: "Medications Tried",
             options: [
-              { text: "Yes, confirmed diagnosis", answerText: "Confirmed diagnosis", nextQuestion: 3 },
-              { text: "Suspected but not confirmed", answerText: "Suspected but not confirmed", result: "diagnosis_required" },
-              { text: "No, not diagnosed with Condition Y", answerText: "Not diagnosed with Condition Y", result: "not_indicated" },
+              { text: "Medication A", answerText: "Medication A" },
+              { text: "Medication B", answerText: "Medication B" },
+              { text: "Medication C", answerText: "Medication C" },
+              { text: "Medication D", answerText: "Medication D" },
+              { text: "None of the above", answerText: "None of the above" },
             ],
           },
           {
             id: 3,
-            text: "Have you previously tried any other treatments for Condition Y?",
-            category: "Previous Treatments",
+            text: "How would you describe your response to previous treatments?",
+            type: "single",
+            category: "Response to Previous Treatments",
             options: [
-              { text: "Yes", answerText: "Tried other treatments", nextQuestion: 4 },
-              { text: "No", answerText: "Not tried any treatments", result: "not_tried_any_treatment" },
+              { text: "Very effective", answerText: "Very effective" },
+              { text: "Somewhat effective", answerText: "Somewhat effective" },
+              { text: "Not effective", answerText: "Not effective" },
+              { text: "I experienced significant side effects", answerText: "Significant side effects" },
+              { text: "Not applicable", answerText: "Not applicable" },
             ],
           },
           {
             id: 4,
-            text: "If you tried other treatments, did they adequately control your symptoms?",
-            category: "Treatment Response",
+            text: "How would you rate the current severity of your symptoms?",
+            type: "single",
+            category: "Symptom Severity",
             options: [
-              { text: "Yes, they were effective", answerText: "Effective", result: "other_treatment_working" },
-              { text: "No, they were ineffective", answerText: "Ineffective", nextQuestion: 5 },
+              { text: "Mild", answerText: "Mild" },
+              { text: "Moderate", answerText: "Moderate" },
+              { text: "Severe", answerText: "Severe" },
+              { text: "Very severe", answerText: "Very severe" },
             ],
           },
           {
             id: 5,
-            text: "What is your current symptom severity?",
-            category: "Current Symptom Severity",
+            text: "Which of the following best describes your current situation? (Select all that apply)",
+            type: "multiple",
+            category: "Current Situation",
             options: [
-              { text: "Mild - no impact on daily activities", answerText: "Mild", nextQuestion: 6 },
-              { text: "Moderate - some impact on daily activities", answerText: "Moderate", nextQuestion: 6 },
-              { text: "Severe - significant impact on daily activities", answerText: "Severe", nextQuestion: 6 },
+              { text: "I work full-time", answerText: "Work full-time" },
+              { text: "I have difficulty with daily activities", answerText: "Difficulty with daily activities" },
+              { text: "I exercise regularly", answerText: "Exercise regularly" },
+              { text: "I have other health conditions", answerText: "Other health conditions" },
+              { text: "I prefer oral medications", answerText: "Prefer oral medications" },
             ],
           },
           {
             id: 6,
-            text: "Do you have any of the following conditions: severe liver disease, severe kidney disease?",
-            category: "Other Medical Conditions",
+            text: "What are your main concerns about starting a new treatment? (Select all that apply)",
+            type: "multiple",
+            category: "Concerns about New Treatment",
             options: [
-              { text: "Yes", answerText: "Liver or kidney condition", result: "liver_kidney_condition" },
-              { text: "No", answerText: "No severe liver/kidney condition", nextQuestion: 7 },
-            ],
-          },
-          {
-            id: 7,
-            text: "Are you currently taking any of the following medications: Medication B, Medication C?",
-            category: "Current Medications",
-            options: [
-              { text: "Yes", answerText: "Taking Medication B/C", result: "medication_interaction" },
-              { text: "No", answerText: "Not taking Medication B/C", result: "potentially_eligible" },
+              { text: "Side effects", answerText: "Side effects" },
+              { text: "Cost/Insurance coverage", answerText: "Cost/Insurance coverage" },
+              { text: "Injection requirements", answerText: "Injection requirements" },
+              { text: "Frequency of dosing", answerText: "Frequency of dosing" },
+              { text: "Effectiveness", answerText: "Effectiveness" },
             ],
           },
         ];
 
-        // Define the possible results/next steps
+        // Define the possible results
         const results = {
-          age_contraindication: {
-            title: "Brand X is typically not prescribed for your age group.",
-            message: "Brand X is generally not prescribed for patients under 18. Please consult with a pediatric specialist for appropriate treatment options.",
-            action: "Consult a pediatric specialist.",
-            recommendationHTML: "Brand X is typically not prescribed for patients under 18. Consult with a pediatric specialist."
-          },
-          not_indicated: {
-            title: "Brand X is not indicated for your condition.",
-            message: "Based on your answers, Brand X is typically not used for your diagnosed condition. Please consult your doctor for alternative treatment options that may be more suitable for you.",
-            action: "Consult your doctor.",
-            recommendationHTML: "Brand X is not indicated for your condition. Consult your doctor for alternative options."
-          },
-          diagnosis_required: {
-            title: "A confirmed diagnosis is required.",
-            message: "A confirmed diagnosis of Condition Y is required before considering Brand X. Please schedule an appointment for proper evaluation.",
-            action: "Schedule an appointment for proper evaluation.",
-            recommendationHTML: "A confirmed diagnosis is required before considering Brand X. Schedule an appointment for proper evaluation."
-          },
-          not_tried_any_treatment: {
-            title: "Consider initial treatments first.",
-            message: "Brand X is generally considered after a patient has tried other initial treatments for Condition Y. We recommend discussing first-line treatment options with your doctor.",
-            action: "Discuss initial treatments with your doctor.",
-            recommendationHTML: "Brand X is generally considered after initial treatments. Discuss first-line options with your doctor."
-          },
-          other_treatment_working: {
-            title: "Your current treatment seems to be working well!",
-            message: "It appears that your current treatments are effectively managing your symptoms. Continue to follow your doctor's advice regarding your current treatment plan.",
-            action: "Continue with your current treatment plan.",
-            recommendationHTML: "Current treatment seems effective. Continue with your current treatment plan."
-          },
-          medication_interaction: {
-            title: "Potential Medication Interactions.",
-            message: "Based on your current medications, there might be potential interactions with Brand X. It's crucial to discuss all your current medications with your doctor before considering Brand X.",
-            action: "Discuss all your medications with your doctor.",
-            recommendationHTML: "Potential medication interactions. Discuss all current medications with your doctor."
-          },
-          liver_kidney_condition: {
-            title: "Liver or kidney conditions may affect Brand X eligibility.",
-            message: "Liver or kidney conditions may affect Brand X eligibility. Additional monitoring or alternative treatments may be required. Please discuss this with your doctor.",
-            action: "Discuss liver/kidney conditions with your doctor.",
-            recommendationHTML: "Liver or kidney conditions may affect Brand X eligibility. Additional monitoring may be required."
-          },
           potentially_eligible: {
-            title: "You may be eligible for Brand X!",
-            message: "Based on your responses, you *may* be a candidate for Brand X. This assessment is for informational purposes only and does not constitute medical advice. It's important to discuss these findings with your doctor to confirm your eligibility and determine if Brand X is the right treatment option for you.",
-            action: "Schedule an appointment with your doctor to discuss Brand X.",
-            recommendationHTML: "Based on responses, you may be eligible for Brand X. Discuss with your doctor for confirmation."
+            title: "Your Assessment Results",
+            message: "Based on your responses, Brand X may be a suitable treatment option for you.",
+            nextSteps: [
+                "Schedule an appointment with your healthcare provider",
+                "Discuss Brand X as a potential treatment option",
+                "Review your complete medical history",
+                "Discuss potential benefits and risks"
+            ],
           },
         };
 
         const App = () => {
-          const [currentQuestionId, setCurrentQuestionId] = useState(1);
+          const [currentView, setCurrentView] = useState('landing');
+          const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
           const [assessmentResult, setAssessmentResult] = useState(null);
-          const [showDisclaimer, setShowDisclaimer] = useState(true);
-          const [userAnswers, setUserAnswers] = useState({}); // Stores {questionId: {questionText, answerText, category}}
-          const [isGeneratingPdf, setIsGeneratingPdf] = useState(false); // State for PDF loading indicator
+          const [userAnswers, setUserAnswers] = useState({});
+          const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
-          const currentQuestion = questions.find(q => q.id === currentQuestionId);
+          const currentQuestion = questions[currentQuestionIndex];
+          const totalQuestions = questions.length;
+          const progress = currentView === 'results' ? 100 : ((currentQuestionIndex) / totalQuestions) * 100;
 
-          const handleAnswer = (option) => {
-            // Store the answer
+          // Handler for single-choice questions
+          const handleSingleAnswer = (questionId, option) => {
             setUserAnswers(prevAnswers => ({
               ...prevAnswers,
-              [currentQuestion.id]: {
-                questionText: currentQuestion.text,
-                answerText: option.answerText,
-                category: currentQuestion.category,
-              }
+              [questionId]: option.answerText,
             }));
+          };
 
-            if (option.nextQuestion) {
-              setCurrentQuestionId(option.nextQuestion);
-            } else if (option.result) {
-              setAssessmentResult(option.result);
+          // Handler for multiple-choice questions
+          const handleMultipleAnswer = (questionId, option) => {
+            setUserAnswers(prevAnswers => {
+              const currentSelections = prevAnswers[questionId] || [];
+              const isSelected = currentSelections.includes(option.answerText);
+
+              if (isSelected) {
+                return {
+                  ...prevAnswers,
+                  [questionId]: currentSelections.filter(item => item !== option.answerText),
+                };
+              } else {
+                return {
+                  ...prevAnswers,
+                  [questionId]: [...currentSelections, option.answerText],
+                };
+              }
+            });
+          };
+
+          const handleNext = () => {
+            const currentAnswer = userAnswers[currentQuestion.id];
+            if (currentQuestion.type === 'single' && !currentAnswer) {
+                alert("Please select an option to continue.");
+                return;
+            }
+            if (currentQuestion.type === 'multiple' && (!currentAnswer || currentAnswer.length === 0)) {
+                alert("Please select at least one option to continue.");
+                return;
+            }
+
+            if (currentQuestionIndex < totalQuestions - 1) {
+              setCurrentQuestionIndex(prevIndex => prevIndex + 1);
+            } else {
+              setAssessmentResult('potentially_eligible');
+              setCurrentView('results');
             }
           };
 
-          const resetAssessment = () => {
-            setCurrentQuestionId(1);
+          const handlePrevious = () => {
+            if (currentQuestionIndex > 0) {
+              setCurrentQuestionIndex(prevIndex => prevIndex - 1);
+            } else {
+              setCurrentView('landing');
+            }
+          };
+
+          const startAssessment = () => {
+            setCurrentView('disclaimer');
+          };
+
+          const acceptDisclaimer = () => {
+            setCurrentView('assessment');
+            setCurrentQuestionIndex(0);
+            setUserAnswers({});
             setAssessmentResult(null);
-            setShowDisclaimer(true);
+          };
+
+          const resetAssessment = () => {
+            setCurrentView('landing');
+            setCurrentQuestionIndex(0);
+            setAssessmentResult(null);
             setUserAnswers({});
           };
 
-          // Function to format date for the header
-          const getFormattedDate = () => {
-            const date = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            return date.toLocaleDateString('en-US', options);
-          };
-
           const handleGeneratePdf = async () => {
-            setIsGeneratingPdf(true); // Start loading indicator
-            const input = document.getElementById('assessment-summary-report'); // ID for the div to capture
-            const ctaButtons = input.querySelector('.flex.flex-wrap.justify-center.gap-4.mt-8'); // Select the CTA buttons div
+            setIsGeneratingPdf(true);
+            const input = document.getElementById('pdf-content');
 
             if (!input) {
-              console.error("Summary report element not found for PDF generation.");
+              console.error("PDF content element not found.");
               setIsGeneratingPdf(false);
               return;
             }
 
-            // Temporarily hide CTA buttons before capturing
-            if (ctaButtons) {
-                ctaButtons.style.display = 'none';
-            }
-
             try {
-              // Ensure html2canvas and jspdf are available globally
               if (typeof html2canvas === 'undefined' || typeof window.jspdf === 'undefined') {
-                console.error("html2canvas or jspdf libraries are not loaded.");
+                console.error("Required libraries not loaded.");
                 return;
               }
 
-              const canvas = await html2canvas(input, { scale: 2 }); // Scale for better resolution
+              const canvas = await html2canvas(input, { 
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+              });
+              
               const imgData = canvas.toDataURL('image/png');
               const pdf = new window.jspdf.jsPDF({
-                orientation: 'p', // portrait
-                unit: 'pt', // points
-                format: 'a4' // A4 size
+                orientation: 'p',
+                unit: 'pt',
+                format: 'a4'
               });
 
-              const imgWidth = 595.28; // A4 width in points
-              const imgHeight = canvas.height * imgWidth / canvas.width;
+              const pdfWidth = pdf.internal.pageSize.getWidth();
+              const pdfHeight = pdf.internal.pageSize.getHeight();
+              const imgWidth = canvas.width;
+              const imgHeight = canvas.height;
+              const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+              const imgX = (pdfWidth - imgWidth * ratio) / 2;
+              const imgY = 30;
 
-              // Add image to PDF, ensuring it fits on one page.
-              // If content is too long, it will be scaled down to fit the page width,
-              // but height might exceed if aspect ratio is maintained and content is very tall.
-              // Forcing to one page means we don't add new pages.
-              pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-
-              pdf.save('BrandX_Assessment_Guide.pdf');
+              pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+              pdf.save('BrandX_Doctor_Discussion_Guide.pdf');
             } catch (error) {
               console.error("Error generating PDF:", error);
-              // In a real app, show a user-friendly error message.
             } finally {
-              // Restore CTA buttons display after capturing
-              if (ctaButtons) {
-                  ctaButtons.style.display = 'flex'; // Or 'block' depending on original display
-              }
-              setIsGeneratingPdf(false); // End loading indicator
+              setIsGeneratingPdf(false);
             }
           };
 
-          const handleSendEmail = () => {
+          const handleEmailResults = () => {
             const subject = "Brand X Eligibility Assessment Results";
             let body = "Hello,\n\nPlease find my Brand X Eligibility Assessment results below:\n\n";
 
-            body += "Patient Responses:\n";
-            Object.values(userAnswers).forEach(answer => {
-              body += `${answer.category}: ${answer.answerText}\n`;
+            body += "Your Responses:\n";
+            questions.forEach(q => {
+                const answer = userAnswers[q.id];
+                if (answer) {
+                    body += `${q.text}: ${Array.isArray(answer) ? answer.join(', ') : answer}\n`;
+                }
             });
             body += "\n";
 
             if (assessmentResult) {
+              const finalResult = results[assessmentResult];
               body += "Assessment Recommendation:\n";
-              body += `${results[assessmentResult].title}\n`;
-              body += `${results[assessmentResult].message}\n`;
-              body += `Next Step: ${results[assessmentResult].action}\n\n`;
+              body += `${finalResult.message}\n`;
+              body += `\nRecommended Next Steps:\n`;
+              finalResult.nextSteps.forEach((step, index) => {
+                body += `${index + 1}. ${step}\n`;
+              });
+              body += "\n";
             }
-
-            body += "Discussion Points for Healthcare Provider:\n";
-            body += "- Based on my assessment responses, am I a candidate for Brand X?\n";
-            body += "- What additional tests or evaluations might be needed?\n";
-            body += "- How does Brand X compare to my current treatment options?\n";
-            body += "- What are the potential side effects and contraindications?\n";
-            body += "- Is Brand X covered by my insurance plan?\n";
-            body += "- What monitoring would be required if I start Brand X?\n\n";
 
             body += "Disclaimer: This assessment is for informational purposes only and does not constitute medical advice. Only a qualified healthcare provider can determine if Brand X is appropriate for your specific condition.\n\n";
             body += "Generated by Brand X Eligibility Assessment Tool";
 
-            // Encode the body for URL
             const encodedBody = encodeURIComponent(body);
-
             window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodedBody}`;
           };
 
-          if (showDisclaimer) {
+          // Landing View
+          if (currentView === 'landing') {
             return (
-              <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4 font-inter">
-                <div className="bg-white p-8 rounded-xl shadow-2xl max-w-lg w-full text-center border-t-4 border-indigo-500">
-                  <h2 className="text-3xl font-bold text-indigo-700 mb-6">Disclaimer</h2>
+              <div className="w-full max-w-6xl mx-auto">
+                {/* Hero Section */}
+                <div className="text-center mb-16">
+                    <div className="w-20 h-20 mx-auto mb-6 bg-indigo-100 rounded-full flex items-center justify-center">
+                      <svg className="w-28 h-28 mx-auto mb-6 text-indigo-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 4H5C3.89543 4 3 4.89543 3 6V18C3 19.1046 3.89543 20 5 20H19C20.1046 20 21 19.1046 21 18V6C21 4.89543 20.1046 4 19 4Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M9 10H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M9 14H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M8 2V6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M16 2V6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    </div>
+                    <h1 className="text-5xl font-bold text-indigo-600 mb-4">
+                        Brand X Eligibility Assessment
+                    </h1>
+                    <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Discover if Brand X might be the right treatment option for you with our personalized assessment tool
+                    </p>
+                </div>
+
+                {/* Feature Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                    <div className="feature-card">
+                        <div className="w-12 h-12 mx-auto mb-4 text-blue-500">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <h3 className="font-semibold text-lg mb-2">Quick & Easy</h3>
+                        <p className="text-sm text-gray-600">Takes only 5-7 minutes to complete</p>
+                    </div>
+                    <div className="feature-card">
+                        <div className="w-12 h-12 mx-auto mb-4 text-green-500">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <h3 className="font-semibold text-lg mb-2">Personalized</h3>
+                        <p className="text-sm text-gray-600">Results tailored to your specific situation</p>
+                    </div>
+                    <div className="feature-card">
+                        <div className="w-12 h-12 mx-auto mb-4 text-purple-500">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                        </div>
+                        <h3 className="font-semibold text-lg mb-2">Doctor Guide</h3>
+                        <p className="text-sm text-gray-600">Get a discussion guide for your doctor visit</p>
+                    </div>
+                    <div className="feature-card">
+                        <div className="w-12 h-12 mx-auto mb-4 text-red-500">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v3h8z"/>
+                            </svg>
+                        </div>
+                        <h3 className="font-semibold text-lg mb-2">Private & Secure</h3>
+                        <p className="text-sm text-gray-600">Your information is kept confidential</p>
+                    </div>
+                </div>
+
+                {/* Main Content Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                    <div className="card">
+                        <h2 className="text-2xl font-semibold mb-4">What You'll Learn</h2>
+                        <ul className="space-y-3">
+                            <li className="flex items-start">
+                                <svg className="w-5 h-5 text-green-500 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                                </svg>
+                                <span>Whether Brand X might be suitable for your condition</span>
+                            </li>
+                            <li className="flex items-start">
+                                <svg className="w-5 h-5 text-green-500 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                                </svg>
+                                <span>Personalized next steps based on your treatment history</span>
+                            </li>
+                            <li className="flex items-start">
+                                <svg className="w-5 h-5 text-green-500 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                                </svg>
+                                <span>Key discussion points to share with your healthcare provider</span>
+                            </li>
+                            <li className="flex items-start">
+                                <svg className="w-5 h-5 text-green-500 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                                </svg>
+                                <span>A downloadable guide for your doctor visit</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="card bg-gray-50 flex flex-col justify-center items-center text-center">
+                        <h2 className="text-2xl font-semibold mb-4">Ready to get started?</h2>
+                        <p className="text-gray-600 mb-6">
+                            Answer {totalQuestions} simple questions about your condition and treatment history
+                        </p>
+                        <button onClick={startAssessment} className="btn-primary">
+                            Start Assessment
+                        </button>
+                    </div>
+                </div>
+
+                {/* Disclaimer */}
+                <div className="card bg-yellow-50 border-l-4 border-yellow-400">
+                    <p className="font-semibold text-yellow-800 mb-2">Important:</p>
+                    <p className="text-yellow-700">
+                        This assessment is for informational purposes only and does not replace medical advice. Always consult with your healthcare provider before making any treatment decisions.
+                    </p>
+                </div>
+              </div>
+            );
+          }
+
+          // Disclaimer View
+          if (currentView === 'disclaimer') {
+            return (
+              <div className="w-full max-w-2xl mx-auto">
+                <div className="card">
+                  <h2 className="text-3xl font-bold text-center mb-6">Disclaimer</h2>
                   <p className="text-gray-700 mb-6 leading-relaxed">
                     This tool is designed to provide general information about potential eligibility for Brand X based on your responses.
                     It is not a substitute for professional medical advice, diagnosis, or treatment.
                     Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition or treatment.
                     Do not disregard professional medical advice or delay in seeking it because of something you have read on this tool.
                   </p>
-                  <button
-                    onClick={() => setShowDisclaimer(false)}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75"
-                  >
-                    I Understand, Start Assessment
-                  </button>
+                  <div className="text-center">
+                    <button onClick={acceptDisclaimer} className="btn-primary">
+                      I Understand, Start Assessment
+                    </button>
+                  </div>
                 </div>
               </div>
             );
           }
 
-          return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4 font-inter">
-              <div className="bg-white p-8 rounded-xl shadow-2xl max-w-3xl w-full border-t-4 border-indigo-500">
-                {assessmentResult ? (
-                  // Result Summary View
-                  <div id="assessment-summary-report" className="pb-4">
-                    <div className="text-center mb-8 border-b-3 border-indigo-700 pb-4">
-                      <h1 className="text-4xl font-extrabold text-indigo-800 mb-2">
+          // Assessment View
+          if (currentView === 'assessment') {
+            return (
+              <div className="w-full max-w-4xl mx-auto">
+                {/* Header */}
+                <div className="text-center mb-8">
+                    <h1 className="text-4xl font-bold text-indigo-600 mb-2">
                         Brand X Eligibility Assessment
-                      </h1>
-                      <p className="text-lg text-gray-600">Doctor Discussion Guide</p>
-                      <p className="text-sm text-gray-500">Assessment Date: {getFormattedDate()}</p>
-                    </div>
-
-                    <div className="mb-8">
-                      <h2 className="text-2xl font-bold text-indigo-700 mb-4 border-b border-gray-300 pb-2">Patient Responses</h2>
-                      {Object.values(userAnswers).map((answer, index) => (
-                        <div key={index} className="mb-3">
-                          <div className="font-bold text-gray-800">{answer.category}:</div>
-                          <div className="ml-5 text-gray-600">{answer.answerText}</div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="mb-8">
-                      <h2 className="text-2xl font-bold text-indigo-700 mb-4 border-b border-gray-300 pb-2">Assessment Recommendations</h2>
-                      <div className="p-4 my-2 border-l-4 border-indigo-500 bg-blue-50 rounded-md">
-                        <p className="text-gray-700">{results[assessmentResult].recommendationHTML}</p>
-                      </div>
-                    </div>
-
-                    <div className="mb-8">
-                      <h2 className="text-2xl font-bold text-indigo-700 mb-4 border-b border-gray-300 pb-2">Discussion Points for Healthcare Provider</h2>
-                      <div className="bg-blue-50 p-4 rounded-md shadow-inner">
-                        <p className="font-bold text-gray-800 mb-2">Questions to Ask:</p>
-                        <ul className="list-disc list-inside text-gray-700">
-                          <li>Based on my assessment responses, am I a candidate for Brand X?</li>
-                          <li>What additional tests or evaluations might be needed?</li>
-                          <li>How does Brand X compare to my current treatment options?</li>
-                          <li>What are the potential side effects and contraindications?</li>
-                          <li>Is Brand X covered by my insurance plan?</li>
-                          <li>What monitoring would be required if I start Brand X?</li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div className="text-center text-sm text-gray-500 border-t border-gray-300 pt-4 mt-8">
-                      <p className="mb-1"><strong>Disclaimer:</strong> This assessment is for informational purposes only and does not constitute medical advice. Only a qualified healthcare provider can determine if Brand X is appropriate for your specific condition.</p>
-                      <p>Generated by Brand X Eligibility Assessment Tool</p>
-                    </div>
-
-                    <div className="flex flex-wrap justify-center gap-4 mt-8">
-                      <button
-                        onClick={handleGeneratePdf}
-                        disabled={isGeneratingPdf}
-                        className={`bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75 ${isGeneratingPdf ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      >
-                        {isGeneratingPdf ? 'Generating PDF...' : 'Generate PDF Guide'}
-                      </button>
-                      <button
-                        onClick={handleSendEmail}
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75"
-                      >
-                        Email Results
-                      </button>
-                      <button
-                        onClick={resetAssessment}
-                        className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75"
-                      >
-                        Start New Assessment
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  // Question View
-                  <div className="text-center">
-                    <h1 className="text-4xl font-extrabold text-center text-indigo-800 mb-8">
-                      Is <span className="text-blue-600">BRANDX</span> Right For Me?
                     </h1>
-                    <p className="text-xl text-gray-800 mb-8 font-medium">{currentQuestion?.text}</p>
-                    <div className="space-y-4">
-                      {currentQuestion?.options.map((option, index) => (
-                        <button
-                          key={index}
-                          onClick={() => handleAnswer(option)}
-                          className="w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75"
-                        >
-                          {option.text}
-                        </button>
-                      ))}
+                    <p className="text-lg text-gray-600">
+                        Answer a few questions to see if Brand X might be right for you
+                    </p>
+                </div>
+
+                {/* Progress */}
+                <div className="mb-8">
+                    <div className="flex justify-between items-center mb-2">
+                        <span className="text-lg font-semibold">Question {currentQuestionIndex + 1} of {totalQuestions}</span>
+                        <span className="text-lg font-semibold">{Math.round(progress)}% Complete</span>
                     </div>
-                  </div>
-                )}
+                    <div className="progress-bar">
+                        <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                    </div>
+                </div>
+
+                {/* Question */}
+                <div className="card mb-8">
+                    <h2 className="text-2xl font-medium text-gray-900 mb-6">{currentQuestion?.text}</h2>
+                    <div className="space-y-3">
+                        {currentQuestion?.type === 'single' ? (
+                            currentQuestion.options.map((option, index) => (
+                                <label
+                                    key={index}
+                                    className={`option-label ${userAnswers[currentQuestion.id] === option.answerText ? 'selected' : ''}`}
+                                >
+                                    <input
+                                        type="radio"
+                                        name={`question-${currentQuestion.id}`}
+                                        value={option.answerText}
+                                        checked={userAnswers[currentQuestion.id] === option.answerText}
+                                        onChange={() => handleSingleAnswer(currentQuestion.id, option)}
+                                        className="mr-4"
+                                    />
+                                    <span className="text-lg">{option.text}</span>
+                                </label>
+                            ))
+                        ) : (
+                            currentQuestion.options.map((option, index) => (
+                                <label
+                                    key={index}
+                                    className={`option-label ${userAnswers[currentQuestion.id]?.includes(option.answerText) ? 'selected' : ''}`}
+                                >
+                                    <input
+                                        type="checkbox"
+                                        name={`question-${currentQuestion.id}`}
+                                        value={option.answerText}
+                                        checked={userAnswers[currentQuestion.id]?.includes(option.answerText) || false}
+                                        onChange={() => handleMultipleAnswer(currentQuestion.id, option)}
+                                        className="mr-4"
+                                    />
+                                    <span className="text-lg">{option.text}</span>
+                                </label>
+                            ))
+                        )}
+                    </div>
+                </div>
+
+                {/* Navigation */}
+                <div className="flex justify-between">
+                    <button
+                        onClick={handlePrevious}
+                        disabled={currentQuestionIndex === 0}
+                        className={currentQuestionIndex === 0 ? "btn-secondary" : "btn-secondary"}
+                        style={{opacity: currentQuestionIndex === 0 ? 0.5 : 1}}
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                        </svg>
+                        Previous
+                    </button>
+                    <button onClick={handleNext} className="btn-primary">
+                        {currentQuestionIndex === totalQuestions - 1 ? 'Get Results' : 'Next'}
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                    </button>
+                </div>
               </div>
-            </div>
-          );
+            );
+          }
+
+          // Results View
+          if (currentView === 'results') {
+            const finalResult = results[assessmentResult];
+
+            return (
+              <div className="w-full max-w-4xl mx-auto">
+                <div id="pdf-content" className="pdf-content">
+                    {/* Results Icon */}
+                    <div className="text-center mb-8">
+                        <div className="w-20 h-20 mx-auto mb-6 bg-indigo-100 rounded-full flex items-center justify-center">
+                            <svg className="w-10 h-10 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                            </svg>
+                        </div>
+
+                        <h1 className="text-4xl font-bold text-indigo-600 mb-4">
+                            {finalResult.title}
+                        </h1>
+                        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                            {finalResult.message}
+                        </p>
+                    </div>
+
+                    {/* User Responses */}
+                    <div className="card mb-8">
+                        <h2 className="text-2xl font-semibold mb-4">Your Responses:</h2>
+                        <div className="space-y-4">
+                            {questions.map((question) => {
+                                const answer = userAnswers[question.id];
+                                if (!answer) return null;
+                                
+                                return (
+                                    <div key={question.id} className="border-b border-gray-200 pb-4 last:border-b-0">
+                                        <h3 className="font-medium text-gray-900 mb-2">{question.text}</h3>
+                                        <p className="text-gray-700">
+                                            {Array.isArray(answer) ? answer.join(', ') : answer}
+                                        </p>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Next Steps */}
+                    <div className="card mb-8">
+                        <h2 className="text-2xl font-semibold mb-4">Recommended Next Steps:</h2>
+                        <ol className="list-decimal list-inside space-y-2 text-lg text-gray-700">
+                            {finalResult.nextSteps.map((step, index) => (
+                                <li key={index}>{step}</li>
+                            ))}
+                        </ol>
+                    </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-wrap justify-center gap-4 mb-8 pdf-hide">
+                  <button
+                    onClick={handleGeneratePdf}
+                    disabled={isGeneratingPdf}
+                    className="btn-primary"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    {isGeneratingPdf ? 'Generating PDF...' : 'Download Doctor Discussion Guide'}
+                  </button>
+                  <button onClick={handleEmailResults} className="btn-primary" style={{backgroundColor: '#3b82f6'}}>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    Email Results to Me
+                  </button>
+                </div>
+
+                <div className="text-center pdf-hide">
+                    <button onClick={resetAssessment} className="text-indigo-600 hover:text-indigo-800 font-semibold">
+                        Take Assessment Again
+                    </button>
+                </div>
+              </div>
+            );
+          }
         };
 
-        // Mount the React App component to the root div
         ReactDOM.createRoot(document.getElementById('root')).render(<App />);
     </script>
 </body>
