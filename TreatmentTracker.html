@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRAND X Treatment Timeline Tracker</title>
+    <style>
+        :root {
+            --primary: #36069A;
+            --secondary: #DE6399;
+            --dark: #020C28;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+            --dark-gray: #212529;
+            --medium-gray: #6C757D;
+            --border-gray: #ADB5BD;
+            --blue-accent: #4A90E2;
+            --success-green: #28A745;
+            --warning-orange: #FF8C00;
+        }
+
+        [data-theme="dark"] {
+            --background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-primary: #ffffff;
+            --text-secondary: #b8c5d6;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="light"] {
+            --background: linear-gradient(135deg, #f8f9ff 0%, #e6ebff 100%);
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: rgba(0, 0, 0, 0.05);
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: var(--background);
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .accessibility-skip {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: var(--primary);
+            color: var(--white);
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            z-index: 1000;
+            font-weight: 500;
+        }
+
+        .accessibility-skip:focus {
+            top: 6px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 8px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        .theme-toggle button {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            padding: 8px 12px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        .theme-toggle button.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .main-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            box-shadow: 0 8px 40px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-bottom: 2rem;
+        }
+
+        .progress-section {
+            margin-bottom: 2rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .progress-percentage {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .progress-bar {
+            background: var(--border-color);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            height: 100%;
+            width: 0%;
+            border-radius: 4px;
+            transition: width 0.8s ease-out;
+        }
+
+        .timeline {
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 35px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary), var(--primary));
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+            padding-left: 60px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.6s ease forwards;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 35px;
+            top: 1.5rem;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            background: var(--border-gray);
+            border-radius: 50%;
+            z-index: 3;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .timeline-item.completed::before {
+            background: var(--primary);
+        }
+
+        .timeline-item.current::before {
+            background: var(--blue-accent);
+            animation: pulse 2s infinite;
+        }
+
+        .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+        .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.3s; }
+        .timeline-item:nth-child(4) { animation-delay: 0.4s; }
+        .timeline-item:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) translateX(-50%); }
+            50% { transform: scale(1.1) translateX(-50%); }
+        }
+
+        .milestone-card-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            background: var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .milestone-card-icon.completed {
+            background: var(--primary);
+            color: white;
+        }
+
+        .milestone-card-icon.current {
+            background: var(--blue-accent);
+            color: white;
+        }
+
+        .milestone-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .milestone-card:hover,
+        .milestone-card:focus-within {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--shadow);
+            border-color: var(--primary);
+        }
+
+        .milestone-card.expanded {
+            border-color: var(--blue-accent);
+        }
+
+        .milestone-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .milestone-title-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .milestone-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .milestone-duration {
+            background: rgba(74, 144, 226, 0.1);
+            color: var(--blue-accent);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .expand-icon {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .expand-icon:hover {
+            background: var(--border-color);
+            color: var(--primary);
+        }
+
+        .expand-icon.rotated {
+            transform: rotate(180deg);
+        }
+
+        .milestone-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .milestone-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .milestone-content.expanded {
+            max-height: 500px;
+        }
+
+        .expectations {
+            margin-top: 1rem;
+        }
+
+        .expectations h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .expectation-list {
+            list-style: none;
+        }
+
+        .expectation-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+        }
+
+        .check-icon {
+            width: 20px;
+            height: 20px;
+            background: var(--success-green);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .mark-complete-button {
+            background: var(--success-green);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+
+        .mark-complete-button:hover:not(:disabled) {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .mark-complete-button:disabled {
+            background: var(--medium-gray);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .important-notes {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--warning-orange);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .notes-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            color: var(--warning-orange);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .notes-list {
+            list-style: none;
+        }
+
+        .notes-list li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .notes-list li::before {
+            content: '•';
+            color: var(--warning-orange);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .cta-section {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .cta-question {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, var(--blue-accent), var(--primary));
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 20px rgba(74, 144, 226, 0.3);
+        }
+
+        .cta-button:hover,
+        .cta-button:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(74, 144, 226, 0.4);
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .main-card {
+                padding: 1.5rem;
+            }
+
+            .title {
+                font-size: 1.6rem;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item {
+                padding-left: 40px;
+            }
+
+            .timeline-item::before {
+                left: 20px;
+            }
+
+            .milestone-card-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 1.2rem;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        @media (prefers-contrast: high) {
+            .main-card,
+            .milestone-card,
+            .important-notes {
+                border-width: 2px;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .milestone-card:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        .expand-icon:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <a href="#main-content" class="accessibility-skip">Skip to main content</a>
+    
+    <div class="theme-toggle" role="group" aria-label="Theme toggle">
+        <button onclick="setTheme('light')" class="active" aria-label="Light theme">☀️</button>
+        <button onclick="setTheme('dark')" aria-label="Dark theme">🌙</button>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="title">BRAND X Treatment Timeline</h1>
+            <p class="subtitle">Track your treatment journey with transparency and confidence. This timeline shows what to expect at each stage of your BRAND X treatment.</p>
+        </header>
+
+        <main id="main-content" class="main-card">
+            <section class="progress-section" role="region" aria-labelledby="progress-heading">
+                <div class="progress-header">
+                    <h2 id="progress-heading" class="progress-label">Treatment Progress</h2>
+                    <span class="progress-percentage">0%</span>
+                </div>
+                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Treatment progress">
+                    <div class="progress-fill"></div>
+                </div>
+            </section>
+
+            <section class="timeline" role="region" aria-labelledby="timeline-heading">
+                <h2 id="timeline-heading" class="sr-only">Treatment Timeline Milestones</h2>
+                
+                <article class="timeline-item current">
+                    <div class="milestone-card" tabindex="0" role="button" aria-expanded="false">
+                        <div class="milestone-header">
+                            <div class="milestone-title-group">
+                                <span class="milestone-card-icon current" aria-hidden="true">👤</span>
+                                <div>
+                                    <h3 class="milestone-title">Initial Consultation</h3>
+                                    <p class="milestone-description">Medical evaluation and treatment planning</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span class="milestone-duration">Day 0</span>
+                                <button class="expand-icon" aria-label="Expand details">▼</button>
+                            </div>
+                        </div>
+                        <div class="milestone-content">
+                            <div class="expectations">
+                                <h4>What to expect:</h4>
+                                <ul class="expectation-list">
+                                    <li><span class="check-icon">✓</span>Comprehensive medical history review</li>
+                                    <li><span class="check-icon">✓</span>Physical examination</li>
+                                    <li><span class="check-icon">✓</span>Treatment plan discussion</li>
+                                    <li><span class="check-icon">✓</span>Informed consent process</li>
+                                </ul>
+                            </div>
+                            <button class="mark-complete-button" data-milestone="0">Mark as Complete</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="timeline-item">
+                    <div class="milestone-card" tabindex="0" role="button" aria-expanded="false">
+                        <div class="milestone-header">
+                            <div class="milestone-title-group">
+                                <span class="milestone-card-icon" aria-hidden="true">📈</span>
+                                <div>
+                                    <h3 class="milestone-title">First Dose Administration</h3>
+                                    <p class="milestone-description">Beginning your BRAND X treatment journey</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span class="milestone-duration">Day 1</span>
+                                <button class="expand-icon" aria-label="Expand details">▼</button>
+                            </div>
+                        </div>
+                        <div class="milestone-content">
+                            <div class="expectations">
+                                <h4>What to expect:</h4>
+                                <ul class="expectation-list">
+                                    <li><span class="check-icon">✓</span>Treatment administration in clinical setting</li>
+                                    <li><span class="check-icon">✓</span>Initial vital signs monitoring</li>
+                                    <li><span class="check-icon">✓</span>Patient education on side effects</li>
+                                    <li><span class="check-icon">✓</span>Schedule follow-up appointments</li>
+                                </ul>
+                            </div>
+                            <button class="mark-complete-button" data-milestone="1" disabled>Mark as Complete</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="timeline-item">
+                    <div class="milestone-card" tabindex="0" role="button" aria-expanded="false">
+                        <div class="milestone-header">
+                            <div class="milestone-title-group">
+                                <span class="milestone-card-icon" aria-hidden="true">🕒</span>
+                                <div>
+                                    <h3 class="milestone-title">Early Monitoring Phase</h3>
+                                    <p class="milestone-description">Close observation for initial response</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span class="milestone-duration">Week 1-2</span>
+                                <button class="expand-icon" aria-label="Expand details">▼</button>
+                            </div>
+                        </div>
+                        <div class="milestone-content">
+                            <div class="expectations">
+                                <h4>What to expect:</h4>
+                                <ul class="expectation-list">
+                                    <li><span class="check-icon">✓</span>Daily symptom tracking</li>
+                                    <li><span class="check-icon">✓</span>Weekly check-in calls</li>
+                                    <li><span class="check-icon">✓</span>Lab work if indicated</li>
+                                    <li><span class="check-icon">✓</span>Side effect management</li>
+                                </ul>
+                            </div>
+                            <button class="mark-complete-button" data-milestone="2" disabled>Mark as Complete</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="timeline-item">
+                    <div class="milestone-card" tabindex="0" role="button" aria-expanded="false">
+                        <div class="milestone-header">
+                            <div class="milestone-title-group">
+                                <span class="milestone-card-icon" aria-hidden="true">📅</span>
+                                <div>
+                                    <h3 class="milestone-title">Response Evaluation</h3>
+                                    <p class="milestone-description">Assessing treatment effectiveness</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span class="milestone-duration">Week 4-6</span>
+                                <button class="expand-icon" aria-label="Expand details">▼</button>
+                            </div>
+                        </div>
+                        <div class="milestone-content">
+                            <div class="expectations">
+                                <h4>What to expect:</h4>
+                                <ul class="expectation-list">
+                                    <li><span class="check-icon">✓</span>Comprehensive response assessment</li>
+                                    <li><span class="check-icon">✓</span>Clinical measurements</li>
+                                    <li><span class="check-icon">✓</span>Quality of life evaluation</li>
+                                    <li><span class="check-icon">✓</span>Treatment adjustment if needed</li>
+                                </ul>
+                            </div>
+                            <button class="mark-complete-button" data-milestone="3" disabled>Mark as Complete</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="timeline-item">
+                    <div class="milestone-card" tabindex="0" role="button" aria-expanded="false">
+                        <div class="milestone-header">
+                            <div class="milestone-title-group">
+                                <span class="milestone-card-icon" aria-hidden="true">✅</span>
+                                <div>
+                                    <h3 class="milestone-title">Maintenance Phase</h3>
+                                    <p class="milestone-description">Ongoing treatment and monitoring</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span class="milestone-duration">Month 2+</span>
+                                <button class="expand-icon" aria-label="Expand details">▼</button>
+                            </div>
+                        </div>
+                        <div class="milestone-content">
+                            <div class="expectations">
+                                <h4>What to expect:</h4>
+                                <ul class="expectation-list">
+                                    <li><span class="check-icon">✓</span>Regular follow-up visits</li>
+                                    <li><span class="check-icon">✓</span>Long-term safety monitoring</li>
+                                    <li><span class="check-icon">✓</span>Dose optimization</li>
+                                    <li><span class="check-icon">✓</span>Patient support resources</li>
+                                </ul>
+                            </div>
+                            <button class="mark-complete-button" data-milestone="4" disabled>Mark as Complete</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section class="important-notes" role="region" aria-labelledby="notes-heading">
+                <div class="notes-header">
+                    <span>⚠️</span>
+                    <h3 id="notes-heading">Important Notes</h3>
+                </div>
+                <ul class="notes-list">
+                    <li>Individual response times may vary – this timeline represents typical expectations</li>
+                    <li>Always follow your healthcare provider's specific instructions</li>
+                    <li>Contact your medical team immediately if you experience any concerning symptoms</li>
+                    <li>Regular monitoring appointments are essential for optimal outcomes</li>
+                </ul>
+            </section>
+
+            <section class="cta-section">
+                <p class="cta-question">Questions about your treatment timeline?</p>
+                <button class="cta-button" onclick="contactCareTeam()">Contact Your Care Team</button>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Global variables
+        let expandedMilestone = null;
+        let milestoneStates = [false, false, false, false, false]; // Track completion status
+
+        // Theme management
+        function setTheme(theme) {
+            document.body.setAttribute('data-theme', theme);
+            document.querySelectorAll('.theme-toggle button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEventListeners();
+            updateButtonStates();
+            updateProgressBar();
+            
+            setTimeout(() => {
+                announceToScreenReader('Treatment timeline loaded. First milestone is ready to be completed.');
+            }, 1000);
+        });
+
+        // Initialize all event listeners
+        function initializeEventListeners() {
+            // Add click event listeners to milestone cards
+            document.querySelectorAll('.milestone-card').forEach(card => {
+                card.addEventListener('click', (event) => toggleMilestone(card, event));
+            });
+
+            // Add click event listeners to mark complete buttons
+            document.querySelectorAll('.mark-complete-button').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    const milestoneIndex = parseInt(button.getAttribute('data-milestone'));
+                    markMilestoneComplete(milestoneIndex);
+                });
+            });
+
+            // Add click event listeners to expand icons
+            document.querySelectorAll('.expand-icon').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    const card = button.closest('.milestone-card');
+                    toggleMilestone(card, event);
+                });
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.target.classList.contains('milestone-card')) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleMilestone(e.target, e);
+                    } else if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        const nextCard = e.target.closest('.timeline-item').nextElementSibling?.querySelector('.milestone-card');
+                        if (nextCard) nextCard.focus();
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        const prevCard = e.target.closest('.timeline-item').previousElementSibling?.querySelector('.milestone-card');
+                        if (prevCard) prevCard.focus();
+                    }
+                }
+            });
+        }
+
+        // Toggle milestone accordion with improved event handling
+        function toggleMilestone(card, event) {
+            // Check if click originated from a button - if so, ignore unless it's the expand icon
+            if (event && event.target.closest('.mark-complete-button')) {
+                return;
+            }
+
+            const content = card.querySelector('.milestone-content');
+            const icon = card.querySelector('.expand-icon');
+            const isExpanded = card.getAttribute('aria-expanded') === 'true';
+
+            // Close previously expanded milestone
+            if (expandedMilestone && expandedMilestone !== card) {
+                const prevContent = expandedMilestone.querySelector('.milestone-content');
+                const prevIcon = expandedMilestone.querySelector('.expand-icon');
+                prevContent.classList.remove('expanded');
+                prevIcon.classList.remove('rotated');
+                expandedMilestone.classList.remove('expanded');
+                expandedMilestone.setAttribute('aria-expanded', 'false');
+            }
+
+            if (!isExpanded) {
+                content.classList.add('expanded');
+                icon.classList.add('rotated');
+                card.classList.add('expanded');
+                card.setAttribute('aria-expanded', 'true');
+                expandedMilestone = card;
+                
+                setTimeout(() => {
+                    const title = card.querySelector('.milestone-title').textContent;
+                    announceToScreenReader(`${title} details expanded`);
+                }, 100);
+            } else {
+                content.classList.remove('expanded');
+                icon.classList.remove('rotated');
+                card.classList.remove('expanded');
+                card.setAttribute('aria-expanded', 'false');
+                expandedMilestone = null;
+            }
+        }
+
+        // Mark milestone as complete
+        function markMilestoneComplete(index) {
+            if (index < 0 || index >= milestoneStates.length) {
+                console.error(`Invalid milestone index: ${index}`);
+                return;
+            }
+
+            console.log(`Marking milestone ${index} as complete`);
+            
+            // Update milestone state
+            milestoneStates[index] = true;
+            
+            // Update button states and visual elements
+            updateButtonStates();
+            updateProgressBar();
+            
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            const currentTitle = timelineItems[index]?.querySelector('.milestone-title')?.textContent || 'Milestone';
+            announceToScreenReader(`${currentTitle} marked as complete.`);
+
+            // Announce next milestone if available
+            if (index + 1 < timelineItems.length && !milestoneStates[index + 1]) {
+                const nextTitle = timelineItems[index + 1]?.querySelector('.milestone-title')?.textContent || 'Next milestone';
+                announceToScreenReader(`${nextTitle} is now active.`);
+            }
+        }
+
+        // Update button states based on milestoneStates array
+        function updateButtonStates() {
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            let firstIncompleteFound = false;
+
+            timelineItems.forEach((item, index) => {
+                const button = item.querySelector('.mark-complete-button');
+                const icon = item.querySelector('.milestone-card-icon');
+                
+                // Remove all state classes first
+                item.classList.remove('completed', 'current');
+                icon.classList.remove('completed', 'current');
+
+                if (milestoneStates[index]) {
+                    // Milestone is completed
+                    item.classList.add('completed');
+                    icon.classList.add('completed');
+                    button.disabled = true;
+                    button.textContent = 'Completed';
+                    button.style.background = 'var(--medium-gray)';
+                } else if (!firstIncompleteFound) {
+                    // First incomplete milestone - make it current
+                    item.classList.add('current');
+                    icon.classList.add('current');
+                    button.disabled = false;
+                    button.textContent = 'Mark as Complete';
+                    button.style.background = 'var(--success-green)';
+                    firstIncompleteFound = true;
+                } else {
+                    // Future milestones - keep disabled
+                    button.disabled = true;
+                    button.textContent = 'Mark as Complete';
+                    button.style.background = 'var(--medium-gray)';
+                }
+            });
+        }
+
+        // Update progress bar based on completed milestones only
+        function updateProgressBar() {
+            const completedCount = milestoneStates.filter(Boolean).length;
+            const progressPercentage = completedCount * 20;
+
+            const progressBarFill = document.querySelector('.progress-fill');
+            const progressPercentageSpan = document.querySelector('.progress-percentage');
+            const progressBarElement = document.querySelector('.progress-bar');
+
+            if (progressBarFill && progressPercentageSpan && progressBarElement) {
+                progressBarFill.style.width = `${progressPercentage}%`;
+                progressPercentageSpan.textContent = `${progressPercentage}%`;
+                progressBarElement.setAttribute('aria-valuenow', progressPercentage);
+            }
+        }
+
+        // Contact care team
+        function contactCareTeam() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: var(--card-bg);
+                backdrop-filter: blur(20px);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                padding: 2rem;
+                box-shadow: 0 8px 40px var(--shadow);
+                z-index: 1001;
+                text-align: center;
+                max-width: 90%;
+                width: 400px;
+                color: var(--text-primary);
+            `;
+            modal.innerHTML = `
+                <p style="margin-bottom: 1.5rem; font-size: 1.1rem;">This would typically open a contact form or redirect to your patient portal. This is a demo.</p>
+                <button style="
+                    background: linear-gradient(135deg, var(--blue-accent), var(--primary));
+                    color: white;
+                    padding: 0.75rem 1.5rem;
+                    border: none;
+                    border-radius: 50px;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                " onclick="this.closest('div').remove()">OK</button>
+            `;
+            document.body.appendChild(modal);
+            announceToScreenReader('Alert: This would typically open a contact form or redirect to your patient portal. This is a demo.');
+        }
+
+        // Screen reader announcements
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.setAttribute('aria-atomic', 'true');
+            announcement.className = 'sr-only';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+            
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
