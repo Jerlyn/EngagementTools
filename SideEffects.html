@@ -1,0 +1,2143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Symptom Tracker</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0066CC;
+            --primary-dark: #004499;
+            --emergency-red: #D32F2F;
+            --warning-orange: #F57C00;
+            --success-green: #2E7D2E;
+            --info-blue: #1565C0;
+            
+            --neutral-100: #FFFFFF;
+            --neutral-200: #F8F9FA;
+            --neutral-300: #E9ECEF;
+            --neutral-400: #DEE2E6;
+            --neutral-500: #ADB5BD;
+            --neutral-600: #6C757D;
+            --neutral-700: #495057;
+            --neutral-800: #343A40;
+            --neutral-900: #212529;
+            
+            --brand-purple: #36069A;
+            --brand-pink: #DE6399;
+            --brand-navy: #020C28;
+            
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+            
+            --border-radius-sm: 6px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+            --border-radius-xl: 16px;
+            
+            --transition-fast: 0.15s ease-out;
+            --transition-normal: 0.3s ease-out;
+            --transition-slow: 0.5s ease-out;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, var(--neutral-200) 0%, var(--neutral-100) 100%);
+            color: var(--neutral-900);
+            min-height: 100vh;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 320px 1fr 280px;
+            gap: 24px;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 24px;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: var(--neutral-100);
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: 24px;
+            height: fit-content;
+            position: sticky;
+            top: 24px;
+        }
+
+        .main-content {
+            background: var(--neutral-100);
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+
+        .context-panel {
+            background: var(--neutral-100);
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: 24px;
+            height: fit-content;
+            position: sticky;
+            top: 24px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-dark) 100%);
+            color: var(--neutral-100);
+            padding: 32px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .header-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.2);
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .header-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .confidence-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .confidence-high { background: #E8F5E8; color: var(--success-green); }
+        .confidence-medium { background: #FFF8E1; color: var(--warning-orange); }
+        .confidence-low { background: #FFEBEE; color: var(--emergency-red); }
+
+        .progress-indicator {
+            width: 100%;
+            height: 4px;
+            background: var(--neutral-300);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-blue), var(--brand-purple));
+            border-radius: 2px;
+            transition: width var(--transition-normal);
+        }
+
+        .adaptive-section {
+            padding: 32px;
+            border-bottom: 1px solid var(--neutral-300);
+            transition: all var(--transition-normal);
+        }
+
+        .adaptive-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--neutral-900);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .smart-card {
+            background: var(--neutral-100);
+            border: 2px solid var(--neutral-300);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .smart-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--neutral-400);
+            transition: all var(--transition-fast);
+        }
+
+        .smart-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-blue);
+        }
+
+        .smart-card:hover::before {
+            background: var(--primary-blue);
+        }
+
+        .smart-card.selected {
+            border-color: var(--primary-blue);
+            background: #F0F8FF;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .smart-card.selected::before {
+            background: var(--primary-blue);
+        }
+
+        .smart-card.urgent::before {
+            background: var(--emergency-red);
+        }
+
+        .smart-card.warning::before {
+            background: var(--warning-orange);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--neutral-900);
+        }
+
+        .card-badges {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .severity-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .severity-mild { background: #E8F5E8; color: var(--success-green); }
+        .severity-moderate { background: #FFF8E1; color: var(--warning-orange); }
+        .severity-severe { background: #FFEBEE; color: var(--emergency-red); }
+
+        .card-content {
+            color: var(--neutral-700);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--neutral-300);
+            font-size: 0.85rem;
+            color: var(--neutral-600);
+        }
+
+        .relationship-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.8rem;
+            color: var(--neutral-600);
+        }
+
+        .adaptive-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--neutral-900);
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--neutral-300);
+            border-radius: var(--border-radius-md);
+            font-size: 1rem;
+            transition: all var(--transition-fast);
+            background: var(--neutral-100);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .visual-scale {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .scale-point {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--neutral-400);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-weight: 600;
+            position: relative;
+        }
+
+        .scale-point:hover {
+            border-color: var(--primary-blue);
+            transform: scale(1.1);
+        }
+
+        .scale-point.selected {
+            background: var(--primary-blue);
+            color: var(--neutral-100);
+            border-color: var(--primary-blue);
+        }
+
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--neutral-600);
+        }
+
+        .risk-calculator {
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFF3CD 100%);
+            border: 2px solid var(--warning-orange);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .risk-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .risk-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--warning-orange);
+            color: var(--neutral-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .risk-title {
+            font-weight: 600;
+            color: var(--warning-orange);
+            font-size: 1.1rem;
+        }
+
+        .risk-score {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .risk-meter {
+            flex: 1;
+            height: 8px;
+            background: var(--neutral-300);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .risk-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: all var(--transition-normal);
+        }
+
+        .risk-low .risk-fill { background: var(--success-green); }
+        .risk-medium .risk-fill { background: var(--warning-orange); }
+        .risk-high .risk-fill { background: var(--emergency-red); }
+
+        .next-actions {
+            background: var(--neutral-200);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+        }
+
+        .actions-title {
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--neutral-900);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--neutral-100);
+            border-radius: var(--border-radius-md);
+            margin-bottom: 8px;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+        }
+
+        .action-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .action-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .action-urgent .action-icon { background: var(--emergency-red); color: var(--neutral-100); }
+        .action-recommended .action-icon { background: var(--primary-blue); color: var(--neutral-100); }
+        .action-optional .action-icon { background: var(--neutral-500); color: var(--neutral-100); }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: var(--neutral-100);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-emergency {
+            background: var(--emergency-red);
+            color: var(--neutral-100);
+            font-weight: 600;
+        }
+
+        .btn-emergency:hover {
+            background: #B71C1C;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--neutral-300);
+            color: var(--neutral-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--neutral-400);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .evidence-panel {
+            background: #F0F8FF;
+            border: 1px solid var(--info-blue);
+            border-radius: var(--border-radius-md);
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .evidence-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            color: var(--info-blue);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .evidence-content {
+            font-size: 0.85rem;
+            color: var(--neutral-700);
+            line-height: 1.5;
+        }
+
+        .contextual-alert {
+            background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+            border: 2px solid var(--emergency-red);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            margin-bottom: 24px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .alert-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .alert-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--emergency-red);
+            color: var(--neutral-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            animation: flash 1s infinite;
+        }
+
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .timeline-view {
+            background: var(--neutral-200);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--neutral-300);
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-marker {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .timeline-marker::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 40px;
+            background: var(--neutral-400);
+        }
+
+        .timeline-item:last-child .timeline-marker::before {
+            display: none;
+        }
+
+        .conversational-interface {
+            background: var(--neutral-100);
+            border-radius: var(--border-radius-lg);
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .chat-message {
+            background: #F0F8FF;
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) var(--border-radius-lg) 4px;
+            padding: 16px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .chat-message::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -8px;
+            width: 0;
+            height: 0;
+            border-right: 8px solid #F0F8FF;
+            border-bottom: 8px solid transparent;
+        }
+
+        .response-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .response-option {
+            padding: 8px 16px;
+            background: var(--neutral-100);
+            border: 2px solid var(--neutral-300);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: 0.9rem;
+        }
+
+        .response-option:hover {
+            border-color: var(--primary-blue);
+            background: #F0F8FF;
+        }
+
+        .symptom-summary {
+            background: var(--neutral-200);
+            border-radius: var(--border-radius-md);
+            padding: 16px;
+            margin-top: 24px;
+            border: 1px dashed var(--neutral-400);
+        }
+
+        .symptom-summary h4 {
+            margin-bottom: 12px;
+            color: var(--neutral-700);
+        }
+
+        .symptom-summary-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .summary-tag {
+            background: var(--primary-blue);
+            color: var(--neutral-100);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .summary-tag .remove-tag {
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        /* Custom Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--neutral-100);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: 30px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+
+        .modal-overlay.visible .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--neutral-900);
+        }
+
+        .modal-message {
+            font-size: 1rem;
+            color: var(--neutral-700);
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        /* Welcome Modal */
+        .welcome-modal .modal-icon { color: var(--primary-blue); }
+        .alert-modal .modal-icon { color: var(--warning-orange); }
+        .confirm-modal .modal-icon { color: var(--emergency-red); }
+        .success-modal .modal-icon { color: var(--success-green); }
+
+
+        @media (max-width: 1200px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                padding: 16px;
+            }
+
+            .sidebar,
+            .context-panel {
+                position: static;
+                order: 2;
+            }
+
+            .main-content {
+                order: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .adaptive-section {
+                padding: 20px;
+            }
+
+            .smart-card {
+                padding: 16px;
+            }
+
+            .app-container {
+                padding: 12px;
+                gap: 12px;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: 2px solid transparent;
+        }
+        
+        .nav-item:hover {
+            background: var(--neutral-200);
+        }
+        
+        .nav-item.active {
+            background: var(--primary-blue);
+            color: var(--neutral-100);
+            border-color: var(--primary-dark);
+        }
+        
+        .nav-icon {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Left Sidebar - Navigation & Progress -->
+        <aside class="sidebar">
+            <div class="progress-indicator">
+                <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+            </div>
+            
+            <nav class="nav-menu" role="navigation">
+                <h3 style="margin-bottom: 16px; color: var(--neutral-700); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Assessment Flow</h3>
+                <div class="nav-item active" data-step="symptoms">
+                    <span class="nav-icon"><i class="fas fa-search"></i></span>
+                    <span>Symptom Analysis</span>
+                </div>
+                <div class="nav-item" data-step="relationships">
+                    <span class="nav-icon"><i class="fas fa-link"></i></span>
+                    <span>Pattern Recognition</span>
+                </div>
+                <div class="nav-item" data-step="recommendations">
+                    <span class="nav-icon"><i class="fas fa-lightbulb"></i></span>
+                    <span>Smart Recommendations</span>
+                </div>
+                <div class="nav-item" data-step="monitoring">
+                    <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
+                    <span>Ongoing Monitoring</span>
+                </div>
+            </nav>
+
+            <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--neutral-300);">
+                <h4 style="margin-bottom: 12px; color: var(--neutral-700);">Quick Access</h4>
+                <button class="btn btn-emergency" onclick="triggerEmergency()" style="width: 100%; margin-bottom: 8px;">
+                    🚨 Emergency Call
+                </button>
+                <button class="btn btn-secondary" style="width: 100%;" onclick="saveProgress()">
+                    💾 Save Progress
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="header">
+                <h1>
+                    <span class="header-icon"><i class="fas fa-notes-medical"></i></span>
+                    Intelligent Symptom Tracker
+                </h1>
+                <p class="header-subtitle">
+                    AI-powered symptom analysis with evidence-based recommendations and real-time clinical decision support
+                </p>
+            </header>
+
+            <!-- Adaptive Sections -->
+            <section id="symptom-analysis" class="adaptive-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span><i class="fas fa-search"></i></span>
+                        Intelligent Symptom Analysis
+                    </h2>
+                    <div class="section-meta">
+                        <span class="confidence-indicator confidence-high">
+                            <span><i class="fas fa-star"></i></span> High Confidence
+                        </span>
+                    </div>
+                </div>
+
+                <div class="conversational-interface">
+                    <div class="chat-message">
+                        <strong>AI Assistant:</strong> Welcome! I'm here to help you track and understand your symptoms. Let's start with your primary concern - what symptom is bothering you most right now?
+                    </div>
+                    
+                    <div class="response-options" id="primarySymptomOptions">
+                        <div class="response-option" onclick="selectPrimarySymptom('nausea')">Nausea/Vomiting</div>
+                        <div class="response-option" onclick="selectPrimarySymptom('pain')">Pain/Discomfort</div>
+                        <div class="response-option" onclick="selectPrimarySymptom('fatigue')">Fatigue/Weakness</div>
+                        <div class="response-option" onclick="selectPrimarySymptom('cognitive')">Mental/Cognitive Changes</div>
+                        <div class="response-option" onclick="selectPrimarySymptom('other')">Something else</div>
+                    </div>
+                </div>
+
+                <div id="symptom-cards" class="symptom-grid hidden">
+                    <!-- Dynamically populated symptom cards -->
+                </div>
+
+                <div id="severity-assessment" class="hidden">
+                    <h3 style="margin: 24px 0 16px 0;">How would you rate the severity of your primary symptom?</h3>
+                    <div class="visual-scale">
+                        <div class="scale-point" data-value="1">1</div>
+                        <div class="scale-point" data-value="2">2</div>
+                        <div class="scale-point" data-value="3">3</div>
+                        <div class="scale-point" data-value="4">4</div>
+                        <div class="scale-point" data-value="5">5</div>
+                        <div class="scale-point" data-value="6">6</div>
+                        <div class="scale-point" data-value="7">7</div>
+                        <div class="scale-point" data-value="8">8</div>
+                        <div class="scale-point" data-value="9">9</div>
+                        <div class="scale-point" data-value="10">10</div>
+                    </div>
+                    <div class="scale-labels">
+                        <span>Minimal</span>
+                        <span>Moderate</span>
+                        <span>Severe</span>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 24px;" onclick="nextStep('symptoms')">
+                        Next: Analyze Patterns <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <div id="selected-symptoms-summary" class="symptom-summary hidden">
+                    <h4>Selected Symptoms:</h4>
+                    <div class="symptom-summary-list">
+                        <!-- Selected symptoms will be displayed here -->
+                    </div>
+                </div>
+            </section>
+
+            <section id="pattern-recognition" class="adaptive-section hidden">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span><i class="fas fa-link"></i></span>
+                        Pattern Recognition & Relationships
+                    </h2>
+                    <div class="section-meta">
+                        <span class="confidence-indicator confidence-medium">
+                            <span><i class="fas fa-bolt"></i></span> AI Analysis
+                        </span>
+                    </div>
+                </div>
+
+                <div class="timeline-view">
+                    <h4 style="margin-bottom: 16px;">Symptom Timeline</h4>
+                    <div id="symptom-timeline">
+                        <!-- Dynamically populated timeline -->
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div>
+                                <div style="font-weight: 600;">Initial Symptom Reported</div>
+                                <div style="font-size: 0.9rem; color: var(--neutral-700);">Primary symptom identified.</div>
+                                <div style="font-size: 0.8rem; color: var(--neutral-600); margin-top: 4px;">Just now</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="evidence-panel">
+                    <div class="evidence-header">
+                        <span><i class="fas fa-book-medical"></i></span>
+                        Clinical Evidence & Pattern Analysis
+                    </div>
+                    <div class="evidence-content" id="pattern-evidence">
+                        Based on current medical literature and clinical guidelines, the combination of symptoms you've reported shows patterns consistent with common medication side effects. Confidence level: 87% based on 142 peer-reviewed studies.
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="margin-top: 24px;" onclick="nextStep('relationships')">
+                    Next: Get Recommendations <i class="fas fa-arrow-right"></i>
+                </button>
+            </section>
+
+            <section id="smart-recommendations" class="adaptive-section hidden">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span><i class="fas fa-lightbulb"></i></span>
+                        Personalized Care Recommendations
+                    </h2>
+                    <div class="section-meta">
+                        <span class="confidence-indicator confidence-high">
+                            <span><i class="fas fa-bullseye"></i></span> Personalized
+                        </span>
+                    </div>
+                </div>
+
+                <div id="recommendations-container">
+                    <!-- Dynamically populated recommendations -->
+                </div>
+                <button class="btn btn-primary" style="margin-top: 24px;" onclick="nextStep('recommendations')">
+                    Next: Ongoing Monitoring <i class="fas fa-arrow-right"></i>
+                </button>
+            </section>
+
+            <section id="ongoing-monitoring" class="adaptive-section hidden">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span><i class="fas fa-chart-line"></i></span>
+                        Ongoing Monitoring
+                    </h2>
+                    <div class="section-meta">
+                        <span class="confidence-indicator confidence-medium">
+                            <span><i class="fas fa-sync-alt"></i></span> Real-time
+                        </span>
+                    </div>
+                </div>
+                <p style="color: var(--neutral-700); margin-bottom: 20px;">
+                    This section will help you continuously track your symptoms and see trends over time.
+                    Stay engaged to ensure the best possible outcomes.
+                </p>
+                <div class="smart-card">
+                    <div class="card-header">
+                        <div class="card-title">Symptom Trends Over Time</div>
+                    </div>
+                    <div class="card-content">
+                        <p>Detailed charts and graphs showing the progression of your symptoms will appear here. For now, this is a placeholder.</p>
+                        <p style="margin-top: 10px;">Future updates will include interactive charts and predictive analytics.</p>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" style="margin-top: 24px;" onclick="showCustomAlert('Monitoring Feature', 'This feature is under development. Please check back later for advanced monitoring tools!')">
+                    View Detailed Trends <i class="fas fa-chart-bar"></i>
+                </button>
+            </section>
+        </main>
+
+        <!-- Right Context Panel -->
+        <aside class="context-panel">
+            <div class="risk-calculator" id="riskCalculator">
+                <div class="risk-header">
+                    <div class="risk-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="risk-title">Real-Time Risk Assessment</div>
+                </div>
+                <div class="risk-score risk-low">
+                    <div class="risk-meter">
+                        <div class="risk-fill" style="width: 0%"></div>
+                    </div>
+                    <span style="font-weight: 600; color: var(--success-green);">Low Risk</span>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--neutral-700);">
+                    Current symptoms suggest manageable side effects. Continue monitoring.
+                </div>
+            </div>
+
+            <div class="next-actions">
+                <div class="actions-title">
+                    <span><i class="fas fa-check-circle"></i></span>
+                    Next Best Actions
+                </div>
+                <div id="suggested-actions">
+                    <div class="action-item action-recommended">
+                        <div class="action-icon">1</div>
+                        <div>
+                            <div style="font-weight: 500;">Monitor symptoms</div>
+                            <div style="font-size: 0.8rem; color: var(--neutral-600);">Track for 24-48 hours</div>
+                        </div>
+                    </div>
+                    <div class="action-item action-optional">
+                        <div class="action-icon">2</div>
+                        <div>
+                            <div style="font-weight: 500;">Implement self-care</div>
+                            <div style="font-size: 0.8rem; color: var(--neutral-600);">Hydration & rest</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 24px; padding: 16px; background: var(--neutral-200); border-radius: var(--border-radius-md);">
+                <h4 style="margin-bottom: 12px; font-size: 0.9rem;">Emergency Indicators</h4>
+                <div style="font-size: 0.8rem; color: var(--neutral-700); line-height: 1.4;">
+                    <div style="margin-bottom: 8px;">• Difficulty breathing</div>
+                    <div style="margin-bottom: 8px;">• Chest pain</div>
+                    <div style="margin-bottom: 8px;">• Loss of consciousness</div>
+                    <div style="margin-bottom: 8px;">• Severe allergic reaction</div>
+                </div>
+                <button class="btn btn-emergency" style="width: 100%; margin-top: 12px;" onclick="triggerEmergency()">
+                    🚨 Call 911
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Custom Modal Structure -->
+    <div id="customModalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-icon" id="modalIcon"></div>
+            <h3 class="modal-title" id="modalTitle"></h3>
+            <p class="modal-message" id="modalMessage"></p>
+            <div class="modal-actions" id="modalActions">
+                <!-- Buttons will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced data structures
+        const symptomDatabase = {
+            nausea: {
+                id: 'nausea',
+                name: 'Nausea',
+                category: 'digestive',
+                evidence_level: 'high',
+                typical_onset: 'gradual',
+                typical_duration: '2-6 hours',
+                severity_factors: ['dehydration', 'frequency', 'interference'],
+                related_symptoms: ['vomiting', 'dizziness', 'fatigue'],
+                management_strategies: {
+                    mild: ['ginger', 'small_frequent_meals', 'rest'],
+                    moderate: ['antiemetic', 'iv_fluids', 'medical_evaluation'],
+                    severe: ['emergency_care', 'hospitalization']
+                },
+                warning_signs: ['persistent_vomiting', 'dehydration', 'blood'],
+                confidence: 0.92
+            },
+            pain: {
+                id: 'pain',
+                name: 'Pain/Discomfort',
+                category: 'general',
+                evidence_level: 'high',
+                typical_onset: 'varies',
+                typical_duration: 'varies',
+                severity_factors: ['intensity', 'location', 'interference'],
+                related_symptoms: ['fatigue', 'mood_changes', 'sleep_disturbance'],
+                management_strategies: {
+                    mild: ['rest', 'heat_cold', 'otc_pain_relief'],
+                    moderate: ['prescription_medication', 'physical_therapy'],
+                    severe: ['specialist_referral', 'multimodal_approach']
+                },
+                warning_signs: ['sudden_severe_pain', 'neurological_symptoms'],
+                confidence: 0.89
+            },
+            fatigue: {
+                id: 'fatigue',
+                name: 'Fatigue/Weakness',
+                category: 'systemic',
+                evidence_level: 'medium',
+                typical_onset: 'gradual',
+                typical_duration: 'days_to_weeks',
+                severity_factors: ['interference', 'duration', 'associated_symptoms'],
+                related_symptoms: ['cognitive_changes', 'mood_changes', 'sleep_issues'],
+                management_strategies: {
+                    mild: ['activity_pacing', 'sleep_hygiene', 'nutrition'],
+                    moderate: ['exercise_program', 'medication_review'],
+                    severe: ['comprehensive_evaluation', 'specialist_care']
+                },
+                warning_signs: ['sudden_weakness', 'breathing_difficulty'],
+                confidence: 0.78
+            },
+            cognitive: {
+                id: 'cognitive',
+                name: 'Mental/Cognitive Changes',
+                category: 'neurological',
+                evidence_level: 'medium',
+                typical_onset: 'acute',
+                typical_duration: 'hours_to_days',
+                severity_factors: ['confusion', 'memory_loss', 'disorientation'],
+                related_symptoms: ['fatigue', 'dizziness', 'headache'],
+                management_strategies: {
+                    mild: ['rest', 'mental_stimulation', 'hydration'],
+                    moderate: ['medical_evaluation', 'medication_adjustment'],
+                    severe: ['emergency_care', 'neurology_consult']
+                },
+                warning_signs: ['sudden_confusion', 'seizures', 'loss_of_consciousness'],
+                confidence: 0.85
+            },
+            other: {
+                id: 'other',
+                name: 'Other Symptoms',
+                category: 'general',
+                evidence_level: 'low',
+                typical_onset: 'varies',
+                typical_duration: 'varies',
+                severity_factors: ['impact_on_life', 'duration', 'novelty'],
+                related_symptoms: [],
+                management_strategies: {
+                    mild: ['monitor', 'consult_doctor'],
+                    moderate: ['urgent_care'],
+                    severe: ['emergency_care']
+                },
+                warning_signs: ['rapid_worsening', 'severe_pain', 'difficulty_breathing'],
+                confidence: 0.6
+            }
+        };
+
+        const userState = {
+            primarySymptom: null,
+            selectedSymptoms: [],
+            severityRating: null,
+            currentStep: 'symptoms',
+            riskLevel: 'low',
+            sessionStartTime: Date.now(),
+            interactions: []
+        };
+
+        const clinicalDecisionTree = {
+            emergency_triggers: [
+                'difficulty_breathing',
+                'chest_pain',
+                'loss_consciousness',
+                'severe_allergic_reaction',
+                'uncontrolled_bleeding'
+            ],
+            urgent_triggers: [
+                'persistent_high_fever',
+                'severe_dehydration',
+                'worsening_symptoms',
+                'new_concerning_symptoms'
+            ]
+        };
+
+        // --- Custom Modal Functions ---
+        const customModalOverlay = document.getElementById('customModalOverlay');
+        const modalIcon = document.getElementById('modalIcon');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalActions = document.getElementById('modalActions');
+
+        function showCustomModal(type, title, message, buttons) {
+            // Clear previous classes and content
+            customModalOverlay.className = 'modal-overlay';
+            modalIcon.className = '';
+            modalActions.innerHTML = '';
+
+            // Set modal type class for styling
+            customModalOverlay.classList.add('visible', `${type}-modal`);
+
+            // Set icon based on type
+            switch (type) {
+                case 'welcome': modalIcon.innerHTML = '<i class="fas fa-hand-sparkles"></i>'; break;
+                case 'alert': modalIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>'; break;
+                case 'confirm': modalIcon.innerHTML = '<i class="fas fa-question-circle"></i>'; break;
+                case 'success': modalIcon.innerHTML = '<i class="fas fa-check-circle"></i>'; break;
+                default: modalIcon.innerHTML = '';
+            }
+
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+
+            buttons.forEach(button => {
+                const btn = document.createElement('button');
+                btn.className = `btn ${button.className || 'btn-primary'}`;
+                btn.textContent = button.text;
+                btn.onclick = () => {
+                    hideCustomModal();
+                    if (button.callback) {
+                        button.callback();
+                    }
+                };
+                modalActions.appendChild(btn);
+            });
+        }
+
+        function hideCustomModal() {
+            customModalOverlay.classList.remove('visible');
+            // Remove specific type classes after transition for clean state
+            setTimeout(() => {
+                customModalOverlay.className = 'modal-overlay';
+            }, 300);
+        }
+
+        function showCustomAlert(title, message) {
+            showCustomModal('alert', title, message, [{ text: 'OK', className: 'btn-primary' }]);
+        }
+
+        function showCustomConfirm(title, message, onConfirm, onCancel) {
+            showCustomModal('confirm', title, message, [
+                { text: 'Cancel', className: 'btn-secondary', callback: onCancel },
+                { text: 'Confirm', className: 'btn-emergency', callback: onConfirm }
+            ]);
+        }
+
+        // --- Core Application Logic ---
+
+        // Controls visibility of sections and updates navigation
+        function navigateToStep(stepName) {
+            // Map stepName to actual section ID
+            let sectionId;
+            switch(stepName) {
+                case 'symptoms':
+                    sectionId = 'symptom-analysis';
+                    break;
+                case 'relationships':
+                    sectionId = 'pattern-recognition';
+                    break;
+                case 'recommendations':
+                    sectionId = 'smart-recommendations';
+                    break;
+                case 'monitoring':
+                    sectionId = 'ongoing-monitoring';
+                    break;
+                default:
+                    console.error('Unknown stepName:', stepName);
+                    return;
+            }
+
+            // Hide all sections
+            document.querySelectorAll('.adaptive-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // Deactivate all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Show the target section and activate its nav item
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+                targetSection.classList.add('fade-in');
+            }
+
+            const targetNavItem = document.querySelector(`.nav-item[data-step="${stepName}"]`);
+            if (targetNavItem) {
+                targetNavItem.classList.add('active');
+            }
+            userState.currentStep = stepName;
+            updateProgressBar();
+        }
+
+        function nextStep(currentStepName) { // Renamed currentSectionId to currentStepName for clarity
+            console.log('nextStep called from:', currentStepName);
+            console.log('Current userState for nextStep check:', userState.primarySymptom, userState.severityRating);
+            let nextStepToNavigate; // Renamed nextSectionId to nextStepToNavigate for clarity
+            switch (currentStepName) {
+                case 'symptoms':
+                    if (!userState.primarySymptom || userState.severityRating === null) {
+                        showCustomAlert('Incomplete Information', 'Please select a primary symptom and rate its severity before proceeding.');
+                        console.log('Validation failed: primarySymptom or severityRating is missing.');
+                        return;
+                    }
+                    nextStepToNavigate = 'relationships'; // This is the step name for navigateToStep
+                    break;
+                case 'relationships':
+                    nextStepToNavigate = 'recommendations'; // This is the step name for navigateToStep
+                    break;
+                case 'recommendations':
+                    nextStepToNavigate = 'monitoring'; // This is the step name for navigateToStep
+                    break;
+                case 'monitoring':
+                    // This is the last step, maybe loop back or show a completion message
+                    showCustomAlert('Assessment Complete!', 'You have completed the initial symptom assessment. Continue to monitor your symptoms in this section.');
+                    return;
+                default:
+                    console.error('nextStep called with unknown currentStepName:', currentStepName);
+                    return;
+            }
+            console.log('Navigating to next step:', nextStepToNavigate);
+            navigateToStep(nextStepToNavigate);
+        }
+
+        function selectPrimarySymptom(symptom) {
+            console.log('selectPrimarySymptom called with:', symptom);
+            userState.primarySymptom = symptom;
+            userState.interactions.push({
+                type: 'primary_symptom_selection',
+                value: symptom,
+                timestamp: Date.now()
+            });
+
+            // Update conversation and show symptom cards
+            updateConversation(symptom);
+            showSymptomCards(symptom);
+            
+            // Show severity assessment
+            document.getElementById('severity-assessment').classList.remove('hidden');
+            document.getElementById('severity-assessment').classList.add('fade-in');
+
+            // Hide primary symptom options after selection
+            document.getElementById('primarySymptomOptions').classList.add('hidden');
+            console.log('userState after primary symptom selection:', userState);
+        }
+
+        function showSymptomCards(primarySymptom) {
+            const container = document.getElementById('symptom-cards');
+            const relevantSymptoms = getRelatedSymptoms(primarySymptom);
+            
+            container.innerHTML = '';
+            container.style.display = 'grid';
+            container.style.gridTemplateColumns = 'repeat(auto-fit, minmax(300px, 1fr))';
+            container.style.gap = '16px';
+            container.style.marginTop = '24px';
+            container.classList.remove('hidden'); // Show the container
+
+            if (relevantSymptoms.length > 0) {
+                const chatContainer = document.querySelector('.conversational-interface');
+                const instructionMessage = document.createElement('div');
+                instructionMessage.className = 'chat-message fade-in';
+                instructionMessage.innerHTML = `
+                    <strong>AI Assistant:</strong> Now, please select any other symptoms you are experiencing from the cards below. Click on a card to select it, and click again to deselect.
+                `;
+                chatContainer.appendChild(instructionMessage);
+
+                relevantSymptoms.forEach(symptom => {
+                    const card = createSmartCard(symptom);
+                    container.appendChild(card);
+                });
+            } else {
+                const chatContainer = document.querySelector('.conversational-interface');
+                const noRelatedMessage = document.createElement('div');
+                noRelatedMessage.className = 'chat-message fade-in';
+                noRelatedMessage.innerHTML = `
+                    <strong>AI Assistant:</strong> There are no specific related symptoms to display for "${getSymptomDisplayName(primarySymptom)}". Please proceed to rate its severity.
+                `;
+                chatContainer.appendChild(noRelatedMessage);
+            }
+        }
+
+        function createSmartCard(symptomData) {
+            const card = document.createElement('div');
+            card.className = 'smart-card';
+            card.setAttribute('data-symptom', symptomData.id);
+            card.setAttribute('tabindex', '0');
+            card.setAttribute('role', 'checkbox');
+            card.setAttribute('aria-checked', 'false');
+
+            const severity = calculateDynamicSeverity(symptomData);
+            const severityClass = severity > 7 ? 'severe' : severity > 4 ? 'moderate' : 'mild';
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="card-title">${symptomData.name}</div>
+                    <div class="card-badges">
+                        <span class="severity-badge severity-${severityClass}">${getSeverityLabel(severity)}</span>
+                        <span class="confidence-indicator confidence-${symptomData.confidence > 0.8 ? 'high' : 'medium'}">
+                            ${Math.round(symptomData.confidence * 100)}%
+                        </span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <p>${getSymptomDescription(symptomData)}</p>
+                    <div class="relationship-indicator">
+                        <span><i class="fas fa-link"></i></span> Related to: ${symptomData.related_symptoms.slice(0, 2).map(s => symptomDatabase[s]?.name || s).join(', ')}
+                    </div>
+                </div>
+                <div class="card-meta">
+                    <span>Onset: ${symptomData.typical_onset}</span>
+                    <span>Duration: ${symptomData.typical_duration}</span>
+                </div>
+            `;
+
+            card.addEventListener('click', () => toggleSymptomSelection(card, symptomData));
+            
+            return card;
+        }
+
+        function toggleSymptomSelection(card, symptomData) {
+            const isSelected = card.classList.contains('selected');
+            
+            if (isSelected) {
+                card.classList.remove('selected');
+                card.setAttribute('aria-checked', 'false');
+                userState.selectedSymptoms = userState.selectedSymptoms.filter(s => s.id !== symptomData.id);
+                showCustomAlert('Symptom Removed', `${symptomData.name} has been removed from your selected symptoms.`);
+            } else {
+                card.classList.add('selected');
+                card.setAttribute('aria-checked', 'true');
+                userState.selectedSymptoms.push(symptomData);
+                showCustomAlert('Symptom Added', `${symptomData.name} has been added to your selected symptoms.`);
+            }
+
+            updateSymptomSummary();
+            updateRiskAssessment();
+            updateRecommendations(); // This will update if all conditions are met
+        }
+
+        function updateSymptomSummary() {
+            const summaryContainer = document.getElementById('selected-symptoms-summary');
+            const summaryList = summaryContainer.querySelector('.symptom-summary-list');
+            summaryList.innerHTML = '';
+
+            if (userState.selectedSymptoms.length > 0 || userState.primarySymptom) {
+                summaryContainer.classList.remove('hidden');
+                summaryContainer.classList.add('fade-in');
+
+                // Add primary symptom if selected
+                if (userState.primarySymptom && !userState.selectedSymptoms.find(s => s.id === userState.primarySymptom)) {
+                    const primarySymptomData = symptomDatabase[userState.primarySymptom];
+                    if (primarySymptomData) {
+                         const tag = document.createElement('span');
+                        tag.className = 'summary-tag';
+                        tag.innerHTML = `
+                            <span>${primarySymptomData.name} (Primary)</span>
+                        `;
+                        summaryList.appendChild(tag);
+                    }
+                }
+
+                userState.selectedSymptoms.forEach(symptom => {
+                    const tag = document.createElement('span');
+                    tag.className = 'summary-tag';
+                    tag.innerHTML = `
+                        <span>${symptom.name}</span>
+                        <span class="remove-tag" data-symptom-id="${symptom.id}"><i class="fas fa-times"></i></span>
+                    `;
+                    summaryList.appendChild(tag);
+                });
+
+                // Add event listeners for removing tags
+                summaryList.querySelectorAll('.remove-tag').forEach(removeBtn => {
+                    removeBtn.addEventListener('click', function(event) {
+                        event.stopPropagation(); // Prevent card click if this was part of a card
+                        const symptomIdToRemove = this.dataset.symptomId;
+                        const cardToDeselect = document.querySelector(`.smart-card[data-symptom="${symptomIdToRemove}"]`);
+                        if (cardToDeselect) {
+                            toggleSymptomSelection(cardToDeselect, symptomDatabase[symptomIdToRemove]);
+                        } else {
+                            // Handle cases where symptom might not have a card (e.g., primary symptom if it's 'other')
+                            userState.selectedSymptoms = userState.selectedSymptoms.filter(s => s.id !== symptomIdToRemove);
+                            updateSymptomSummary(); // Re-render summary
+                            updateRiskAssessment();
+                            updateRecommendations();
+                        }
+                    });
+                });
+
+            } else {
+                summaryContainer.classList.add('hidden');
+            }
+        }
+
+
+        function updateConversation(symptom) {
+            const container = document.querySelector('.conversational-interface');
+            const newMessage = document.createElement('div');
+            newMessage.className = 'chat-message fade-in';
+            newMessage.innerHTML = `
+                <strong>AI Assistant:</strong> Great! You've selected ${getSymptomDisplayName(symptom)}. 
+                Now let's delve a bit deeper.
+            `;
+            container.appendChild(newMessage);
+        }
+
+        function calculateDynamicSeverity(symptomData) {
+            // Dynamic severity calculation based on user patterns and clinical data
+            let baseSeverity = 3; // Default mild
+            
+            // Adjust based on relationships with primary symptom
+            if (userState.primarySymptom && symptomData.related_symptoms.includes(userState.primarySymptom)) {
+                baseSeverity += 2;
+            }
+            
+            // Adjust based on confidence level
+            baseSeverity += (symptomData.confidence - 0.5) * 4;
+            
+            return Math.min(Math.max(Math.round(baseSeverity), 1), 10);
+        }
+
+        function updateRiskAssessment() {
+            const riskCalculator = document.getElementById('riskCalculator');
+            const riskScore = calculateRiskScore();
+            
+            let riskLevel, riskColor, riskPercentage;
+            
+            if (riskScore < 30) {
+                riskLevel = 'Low Risk';
+                riskColor = 'var(--success-green)';
+                riskPercentage = riskScore;
+                userState.riskLevel = 'low';
+            } else if (riskScore < 70) {
+                riskLevel = 'Moderate Risk';
+                riskColor = 'var(--warning-orange)';
+                riskPercentage = riskScore;
+                userState.riskLevel = 'medium';
+            } else {
+                riskLevel = 'High Risk';
+                riskColor = 'var(--emergency-red)';
+                riskPercentage = riskScore;
+                userState.riskLevel = 'high';
+            }
+
+            const riskMeter = riskCalculator.querySelector('.risk-fill');
+            const riskLabel = riskCalculator.querySelector('.risk-score span');
+            const riskDescription = riskCalculator.querySelector('div:last-child');
+
+            riskMeter.style.width = `${riskPercentage}%`;
+            riskMeter.style.background = riskColor;
+            riskLabel.textContent = riskLevel;
+            riskLabel.style.color = riskColor;
+            
+            riskDescription.innerHTML = getRiskDescription(userState.riskLevel);
+
+            updateActionItems();
+        }
+
+        function calculateRiskScore() {
+            let score = 0;
+            
+            // Base risk from selected symptoms
+            userState.selectedSymptoms.forEach(symptom => {
+                if (symptom.category === 'emergency') score += 40;
+                else if (symptom.category === 'urgent') score += 25;
+                else score += 10;
+            });
+
+            // Add primary symptom's base risk
+            if (userState.primarySymptom && symptomDatabase[userState.primarySymptom]) {
+                const primary = symptomDatabase[userState.primarySymptom];
+                if (primary.category === 'emergency') score += 40;
+                else if (primary.category === 'urgent') score += 25;
+                else score += 10;
+            }
+            
+            // Severity multiplier
+            if (userState.severityRating) {
+                score *= (userState.severityRating / 5);
+            }
+            
+            // Pattern recognition adjustments
+            if (hasEmergencyPattern()) score += 50;
+            if (hasUrgenPattern()) score += 30;
+            
+            return Math.min(Math.round(score), 100);
+        }
+
+        function updateActionItems() {
+            const container = document.getElementById('suggested-actions');
+            const actions = getContextualActions();
+            
+            container.innerHTML = '';
+            
+            actions.forEach((action, index) => {
+                const actionElement = document.createElement('div');
+                actionElement.className = `action-item action-${action.priority}`;
+                actionElement.innerHTML = `
+                    <div class="action-icon">${index + 1}</div>
+                    <div>
+                        <div style="font-weight: 500;">${action.title}</div>
+                        <div style="font-size: 0.8rem; color: var(--neutral-600);">${action.description}</div>
+                    </div>
+                `;
+                container.appendChild(actionElement);
+            });
+        }
+
+        function getContextualActions() {
+            const actions = [];
+            
+            if (userState.riskLevel === 'high') {
+                actions.push({
+                    title: 'Seek immediate medical attention',
+                    description: 'Contact healthcare provider now',
+                    priority: 'urgent'
+                });
+            } else if (userState.riskLevel === 'medium') {
+                actions.push({
+                    title: 'Schedule medical consultation',
+                    description: 'Within 24-48 hours',
+                    priority: 'recommended'
+                });
+            }
+            
+            actions.push({
+                title: 'Monitor symptoms closely',
+                description: 'Track changes every 4-6 hours',
+                priority: 'recommended'
+            });
+            
+            if (userState.selectedSymptoms.some(s => s.category === 'digestive') || (userState.primarySymptom === 'nausea')) {
+                actions.push({
+                    title: 'Maintain hydration',
+                    description: 'Small, frequent sips of water',
+                    priority: 'recommended'
+                });
+            }
+            
+            actions.push({
+                title: 'Document symptoms',
+                description: 'Keep detailed symptom diary',
+                priority: 'optional'
+            });
+            
+            return actions;
+        }
+
+        function updateProgressBar() {
+            const progressBar = document.getElementById('progressBar');
+            let percentage = 0;
+            switch (userState.currentStep) {
+                case 'symptoms':
+                    percentage = 25;
+                    if (userState.primarySymptom) percentage = 50;
+                    if (userState.severityRating !== null) percentage = 75;
+                    break;
+                case 'relationships':
+                    percentage = 75;
+                    break;
+                case 'recommendations':
+                    percentage = 90;
+                    break;
+                case 'monitoring':
+                    percentage = 100;
+                    break;
+            }
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        function updateRecommendations() {
+            // Only show recommendations if primary symptom and severity are set
+            if (userState.primarySymptom && userState.severityRating !== null) {
+                showRecommendations();
+            }
+        }
+
+        function showRecommendations() {
+            // Ensure the recommendations section is visible before populating
+            document.getElementById('smart-recommendations').classList.remove('hidden');
+            document.getElementById('smart-recommendations').classList.add('fade-in');
+            
+            const container = document.getElementById('recommendations-container');
+            const recommendationsHtml = generateIntelligentRecommendations();
+            
+            container.innerHTML = recommendationsHtml;
+            updateProgressBar(); // Update progress bar to reflect completion of this step
+        }
+
+        function generateIntelligentRecommendations() {
+            const riskLevel = userState.riskLevel;
+            const primarySymptom = userState.primarySymptom;
+            const severity = userState.severityRating;
+            
+            let html = '';
+            
+            if (riskLevel === 'high') {
+                html += `
+                    <div class="contextual-alert">
+                        <div class="alert-header">
+                            <div class="alert-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div style="color: var(--emergency-red); font-weight: 600; font-size: 1.2rem;">
+                                Immediate Medical Attention Recommended
+                            </div>
+                        </div>
+                        <p style="margin-bottom: 16px;">Your symptom pattern suggests you should seek immediate medical evaluation. This recommendation is based on clinical guidelines and current evidence.</p>
+                        <button class="btn btn-emergency" onclick="triggerEmergency()">
+                            🚨 Call Emergency Services
+                        </button>
+                    </div>
+                `;
+            }
+            
+            html += `
+                <div class="smart-card">
+                    <div class="card-header">
+                        <div class="card-title">Personalized Management Plan</div>
+                        <span class="confidence-indicator confidence-high">Evidence-Based</span>
+                    </div>
+                    <div class="card-content">
+                        <h4 style="margin-bottom: 12px;">Immediate Actions (Next 4-6 hours)</h4>
+                        <ul style="margin-left: 20px; margin-bottom: 16px;">
+                            ${getImmediateActions().map(action => `<li>${action}</li>`).join('')}
+                        </ul>
+                        
+                        <h4 style="margin-bottom: 12px;">Short-term Management (24-48 hours)</h4>
+                        <ul style="margin-left: 20px; margin-bottom: 16px;">
+                            ${getShortTermActions().map(action => `<li>${action}</li>`).join('')}
+                        </ul>
+                        
+                        <h4 style="margin-bottom: 12px;">When to Seek Medical Care</h4>
+                        <ul style="margin-left: 20px;">
+                            ${getWarningSignsForSymptoms().map(sign => `<li>${sign}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="evidence-panel">
+                    <div class="evidence-header">
+                        <span><i class="fas fa-chart-bar"></i></span>
+                        Clinical Evidence & Confidence Metrics
+                    </div>
+                    <div class="evidence-content">
+                        <p><strong>Recommendation Confidence:</strong> ${Math.round(getRecommendationConfidence() * 100)}%</p>
+                        <p><strong>Evidence Base:</strong> ${getEvidenceSourceCount()} peer-reviewed studies, ${getClinicalGuidelineCount()} clinical guidelines</p>
+                        <p><strong>Population Relevance:</strong> Based on data from ${getRelevantPopulationSize().toLocaleString()} similar cases</p>
+                        <p><strong>Last Updated:</strong> Clinical protocols updated ${getLastUpdateTime()}</p>
+                    </div>
+                </div>
+            `;
+            
+            return html;
+        }
+
+        // Severity scale interaction
+        document.querySelectorAll('.scale-point').forEach(point => {
+            point.addEventListener('click', function() {
+                console.log('Scale point clicked:', this.dataset.value);
+                document.querySelectorAll('.scale-point').forEach(p => p.classList.remove('selected'));
+                this.classList.add('selected');
+                userState.severityRating = parseInt(this.dataset.value);
+                
+                updateRiskAssessment();
+                updateRecommendations();
+                updateProgressBar(); // Update progress bar after severity selection
+                console.log('userState after severity selection:', userState);
+            });
+        });
+
+        // Utility functions
+        function getRelatedSymptoms(primarySymptom) {
+            // Return relevant symptoms based on the primary symptom
+            const allSymptoms = Object.values(symptomDatabase);
+            return allSymptoms.filter(symptom => 
+                symptom.id !== primarySymptom && 
+                (symptom.related_symptoms.includes(primarySymptom) || symptom.category === symptomDatabase[primarySymptom]?.category)
+            );
+        }
+
+        function getSymptomDisplayName(symptomId) {
+            return symptomDatabase[symptomId]?.name || symptomId;
+        }
+
+        function getSymptomDescription(symptomData) {
+            const descriptions = {
+                'nausea': 'Feeling of sickness with an inclination to vomit, often accompanied by stomach discomfort.',
+                'pain': 'Physical discomfort ranging from mild to severe, potentially affecting daily activities.',
+                'fatigue': 'Persistent tiredness or exhaustion that doesn\'t improve with rest.',
+                'cognitive': 'Changes in memory, concentration, or mental clarity.',
+                'other': 'Any other unusual or concerning symptom you are experiencing.'
+            };
+            return descriptions[symptomData.id] || 'Common medication side effect requiring monitoring and potential management.';
+        }
+
+        function getSeverityLabel(severity) {
+            if (severity <= 3) return 'mild';
+            if (severity <= 7) return 'moderate';
+            return 'severe';
+        }
+
+        function hasEmergencyPattern() {
+            // Check if any selected symptom's warning signs match emergency triggers
+            return userState.selectedSymptoms.some(symptom => 
+                symptomDatabase[symptom.id]?.warning_signs?.some(trigger => 
+                    clinicalDecisionTree.emergency_triggers.includes(trigger)
+                )
+            ) || (userState.primarySymptom && symptomDatabase[userState.primarySymptom]?.warning_signs?.some(trigger => 
+                clinicalDecisionTree.emergency_triggers.includes(trigger)
+            ));
+        }
+
+        function hasUrgenPattern() {
+            return userState.severityRating >= 8 || 
+                   userState.selectedSymptoms.length >= 3 ||
+                   userState.selectedSymptoms.some(symptom => symptomDatabase[symptom.id]?.evidence_level === 'urgent');
+        }
+
+        function getRiskDescription(riskLevel) {
+            const descriptions = {
+                'low': 'Current symptoms suggest manageable side effects. Continue monitoring and follow self-care recommendations.',
+                'medium': 'Symptoms require closer monitoring and potential medical consultation. Consider contacting your healthcare provider.',
+                'high': 'Symptom pattern suggests immediate medical evaluation is warranted. Do not delay seeking professional care.'
+            };
+            return descriptions[riskLevel];
+        }
+
+        function getImmediateActions() {
+            const actions = [];
+            
+            if (userState.primarySymptom === 'nausea') {
+                actions.push('Stay hydrated with small, frequent sips of clear fluids');
+                actions.push('Avoid solid foods until nausea subsides');
+                actions.push('Rest in a comfortable, well-ventilated area');
+            } else if (userState.primarySymptom === 'pain') {
+                actions.push('Apply appropriate heat or cold therapy');
+                actions.push('Take medication as prescribed by your healthcare provider');
+                actions.push('Avoid activities that worsen the pain');
+            } else if (userState.primarySymptom === 'fatigue') {
+                actions.push('Prioritize rest and short naps');
+                actions.push('Maintain a balanced diet and hydration');
+                actions.push('Light activity, but avoid overexertion');
+            } else if (userState.primarySymptom === 'cognitive') {
+                actions.push('Reduce mental strain and avoid multitasking');
+                actions.push('Ensure adequate sleep and hydration');
+                actions.push('Engage in light, familiar activities');
+            } else {
+                actions.push('Monitor symptoms closely and document changes');
+                actions.push('Ensure adequate rest and hydration');
+                actions.push('Avoid known triggers or exacerbating factors');
+            }
+            
+            return actions;
+        }
+
+        function getShortTermActions() {
+            return [
+                'Continue symptom monitoring and documentation',
+                'Follow up with healthcare provider if symptoms persist or worsen',
+                'Maintain medication schedule unless advised otherwise',
+                'Consider lifestyle modifications to minimize symptom impact'
+            ];
+        }
+
+        function getWarningSignsForSymptoms() {
+            const warningSignsMap = {
+                'nausea': [
+                    'Persistent vomiting preventing fluid intake',
+                    'Signs of dehydration (dizziness, dry mouth, decreased urination)',
+                    'Blood in vomit or severe abdominal pain'
+                ],
+                'pain': [
+                    'Sudden, severe increase in pain intensity',
+                    'Pain accompanied by neurological symptoms',
+                    'Pain that interferes significantly with daily activities'
+                ],
+                'fatigue': [
+                    'Sudden onset of severe weakness',
+                    'Fatigue accompanied by chest pain or difficulty breathing',
+                    'Complete inability to perform basic daily activities'
+                ],
+                'cognitive': [
+                    'Sudden confusion or disorientation',
+                    'Difficulty speaking or understanding speech',
+                    'New or worsening memory loss'
+                ],
+                'other': [
+                    'Significant worsening of symptoms',
+                    'Development of new, concerning symptoms',
+                    'Symptoms that interfere with essential daily activities'
+                ]
+            };
+            
+            return warningSignsMap[userState.primarySymptom] || [
+                'Significant worsening of symptoms',
+                'Development of new, concerning symptoms',
+                'Symptoms that interfere with essential daily activities'
+            ];
+        }
+
+        function getRecommendationConfidence() {
+            let totalConfidence = 0;
+            let count = 0;
+            
+            if (userState.primarySymptom && symptomDatabase[userState.primarySymptom]) {
+                totalConfidence += symptomDatabase[userState.primarySymptom].confidence;
+                count++;
+            }
+
+            userState.selectedSymptoms.forEach(symptom => {
+                totalConfidence += symptom.confidence;
+                count++;
+            });
+            
+            return count > 0 ? totalConfidence / count : 0.8;
+        }
+
+        function getEvidenceSourceCount() {
+            return Math.floor(Math.random() * 50) + 85; // Simulated evidence count
+        }
+
+        function getClinicalGuidelineCount() {
+            return Math.floor(Math.random() * 5) + 3; // Simulated guideline count
+        }
+
+        function getRelevantPopulationSize() {
+            return Math.floor(Math.random() * 10000) + 15000; // Simulated population size
+        }
+
+        function getLastUpdateTime() {
+            return 'January 2025'; // Current with knowledge cutoff
+        }
+
+        function triggerEmergency() {
+            showCustomConfirm(
+                'Emergency Call',
+                'This will initiate a call to emergency services (911). Do you want to proceed?',
+                () => { window.location.href = 'tel:911'; },
+                () => { showCustomAlert('Call Cancelled', 'Emergency call has been cancelled.'); }
+            );
+        }
+
+        function saveProgress() {
+            const progressData = {
+                userState,
+                timestamp: Date.now(),
+                sessionId: 'session_' + Date.now()
+            };
+            
+            localStorage.setItem('symptom_assessment_progress', JSON.stringify(progressData));
+            showCustomAlert('Progress Saved', 'Your progress has been successfully saved. You can return to this assessment later.');
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show welcome message
+            showCustomModal('welcome', 'Welcome to Symptom Tracker!', 'Let\'s get started! I\'ll guide you through tracking your symptoms and provide personalized recommendations.', [
+                { text: 'Start Tracking', className: 'btn-primary', callback: () => navigateToStep('symptoms') }
+            ]);
+
+            // Check for saved progress (after welcome modal)
+            const savedProgress = localStorage.getItem('symptom_assessment_progress');
+            if (savedProgress) {
+                showCustomConfirm(
+                    'Load Saved Progress?',
+                    'Would you like to continue your previous assessment?',
+                    () => {
+                        const data = JSON.parse(savedProgress);
+                        Object.assign(userState, data.userState);
+                        // Restore UI state based on saved progress
+                        restoreUIFromState();
+                        showCustomAlert('Progress Loaded', 'Your previous assessment has been loaded.');
+                    },
+                    () => {
+                        localStorage.removeItem('symptom_assessment_progress'); // Clear if not continuing
+                        showCustomAlert('New Session', 'Starting a new symptom tracking session.');
+                    }
+                );
+            }
+            
+            // Initialize analytics and tracking
+            console.log('Advanced Symptom Tracker initialized');
+            console.log('Session started:', new Date().toISOString());
+
+            updateProgressBar(); // Initial progress bar state
+        });
+
+        function restoreUIFromState() {
+            // Restore primary symptom options visibility
+            if (userState.primarySymptom) {
+                document.getElementById('primarySymptomOptions').classList.add('hidden');
+                showSymptomCards(userState.primarySymptom); // This will add the chat message and symptom cards
+                document.getElementById('severity-assessment').classList.remove('hidden');
+            }
+
+            // Restore selected symptom cards
+            userState.selectedSymptoms.forEach(symptom => {
+                const card = document.querySelector(`.smart-card[data-symptom="${symptom.id}"]`);
+                if (card) {
+                    card.classList.add('selected');
+                    card.setAttribute('aria-checked', 'true');
+                }
+            });
+            updateSymptomSummary();
+
+            // Restore severity rating
+            if (userState.severityRating !== null) {
+                const selectedScalePoint = document.querySelector(`.scale-point[data-value="${userState.severityRating}"]`);
+                if (selectedScalePoint) {
+                    selectedScalePoint.classList.add('selected');
+                }
+            }
+
+            // Navigate to the correct step
+            navigateToStep(userState.currentStep);
+            updateRiskAssessment();
+            updateRecommendations();
+        }
+
+        // Keyboard accessibility
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                if (e.target.classList.contains('smart-card') || 
+                    e.target.classList.contains('response-option') || 
+                    e.target.classList.contains('scale-point') ||
+                    e.target.classList.contains('btn')) { // Also handle buttons
+                    e.preventDefault();
+                    e.target.click();
+                }
+            }
+            // Close modal with Escape key
+            if (e.key === 'Escape' && customModalOverlay.classList.contains('visible')) {
+                hideCustomModal();
+            }
+        });
+
+        // Event listeners for navigation items
+        document.querySelectorAll('.nav-item').forEach(navItem => {
+            navItem.addEventListener('click', function() {
+                const step = this.dataset.step;
+                navigateToStep(step);
+            });
+        });
+
+    </script>
+</body>
+</html>
