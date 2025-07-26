@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Stories - Find Hope and Connection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #212529;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #36069A;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #6c757d;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Stats Section */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            position: relative;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .stat-icon.stories { background: #36069A; }
+        .stat-icon.videos { background: #DE6399; }
+        .stat-icon.survivors { background: #28a745; }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        /* Search and Filter Section */
+        .search-filter-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .search-bar {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #36069A;
+            box-shadow: 0 0 0 3px rgba(54, 6, 154, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        /* Filter Pills */
+        .filter-pills {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            background: white;
+            color: #6c757d;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .pill:hover {
+            border-color: #36069A;
+            color: #36069A;
+            transform: translateY(-1px);
+        }
+
+        .pill.active {
+            background: #36069A;
+            border-color: #36069A;
+            color: white;
+        }
+
+        .pill-count {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 0.1rem 0.4rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+
+        .pill.active .pill-count {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Advanced Filters */
+        .advanced-filters {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .advanced-filters-toggle {
+            color: #36069A;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .filter-group {
+            position: relative;
+        }
+
+        .filter-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #212529;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.875rem;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23666" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 0.65rem auto;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #36069A;
+            box-shadow: 0 0 0 3px rgba(54, 6, 154, 0.1);
+        }
+
+        /* Results Count */
+        .results-count {
+            margin: 1.5rem 0;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        /* Story Grid */
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .story-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .story-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .story-header {
+            padding: 1.5rem 1.5rem 1rem;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .story-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .patient-info h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 0.25rem;
+        }
+
+        .patient-details {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+        .story-badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.video {
+            background: #DE6399;
+            color: white;
+        }
+
+        .badge.story {
+            background: #36069A;
+            color: white;
+        }
+
+        .video-placeholder {
+            height: 200px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem 1.5rem;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .play-button {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #36069A;
+            font-size: 1.5rem;
+        }
+
+        .story-content {
+            padding: 1rem 1.5rem;
+        }
+
+        .stage-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .stage-badge.progressive { background: #fff3cd; color: #856404; }
+        .stage-badge.stage { background: #d1ecf1; color: #0c5460; }
+        .stage-badge.stable { background: #d4edda; color: #155724; }
+        .stage-badge.early { background: #f8d7da; color: #721c24; }
+        .stage-badge.remission { background: #d1f2eb; color: #0c5460; }
+        .stage-badge.survivor { background: #e2d5f1; color: #36069A; }
+
+        .story-excerpt {
+            color: #6c757d;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .story-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .time-stamp {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+        .read-more {
+            color: #36069A;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .read-more:hover {
+            color: #DE6399;
+            transform: translateX(2px);
+        }
+
+        /* Share Your Story CTA */
+        .share-cta {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .share-cta h2 {
+            font-size: 1.75rem;
+            color: #36069A;
+            margin-bottom: 1rem;
+        }
+
+        .share-cta p {
+            color: #6c757d;
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            background: #36069A;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            background: #DE6399;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(54, 6, 154, 0.3);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid #e9ecef;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6c757d;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: #f8f9fa;
+            color: #212529;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-subtitle {
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .journey-section {
+            margin-bottom: 2rem;
+        }
+
+        .journey-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #36069A;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .journey-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #212529;
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #36069A;
+        }
+
+        .patient-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-card {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+
+        .detail-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .detail-card.age .detail-label { color: #36069A; }
+        .detail-card.status .detail-label { color: #28a745; }
+        .detail-card.stage .detail-label { color: #DE6399; }
+
+        .teachings {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .teachings h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #212529;
+        }
+
+        .teachings ul {
+            list-style: none;
+        }
+
+        .teachings li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            color: #212529;
+            line-height: 1.6;
+        }
+
+        .teachings li::before {
+            content: '●';
+            color: #36069A;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            padding: 1rem 2rem 2rem;
+            flex-wrap: wrap;
+        }
+
+        .action-button {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .action-button.primary {
+            background: #36069A;
+            border-color: #36069A;
+            color: white;
+        }
+
+        .action-button.primary:hover {
+            background: #DE6399;
+            border-color: #DE6399;
+        }
+
+        .action-button.secondary {
+            background: white;
+            border-color: #36069A;
+            color: #36069A;
+        }
+
+        .action-button.secondary:hover {
+            background: #36069A;
+            color: white;
+        }
+
+        /* Loading States */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #36069A;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .stats {
+                gap: 1.5rem;
+            }
+
+            .stories-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal {
+                padding: 1rem;
+            }
+
+            .modal-content {
+                max-height: 95vh;
+            }
+
+            .modal-header,
+            .modal-body {
+                padding: 1rem;
+            }
+
+            .filter-pills {
+                gap: 0.25rem;
+            }
+
+            .pill {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .patient-details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        /* Focus styles for accessibility */
+        .story-card:focus,
+        .pill:focus,
+        .cta-button:focus,
+        .action-button:focus {
+            outline: 3px solid #36069A;
+            outline-offset: 2px;
+        }
+
+        /* Screen reader only content */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Ensure proper focus management in modal */
+        .modal.active .modal-content {
+            outline: none;
+        }
+
+        /* Hide advanced filters by default */
+        .filters-grid {
+            display: none;
+        }
+
+        .filters-grid.active {
+            display: grid;
+        }
+
+        .chevron {
+            transition: transform 0.3s ease;
+        }
+
+        .chevron.expanded {
+            transform: rotate(180deg);
+        }
+
+        /* Share Panel Styles */
+        .share-panel {
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            padding: 2rem;
+            margin-top: 1rem;
+            border-radius: 0 0 12px 12px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .share-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .share-header h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #36069A;
+            margin-bottom: 0.5rem;
+        }
+
+        .share-header p {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .share-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .share-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-align: left;
+        }
+
+        .share-option:hover {
+            border-color: #36069A;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(54, 6, 154, 0.15);
+        }
+
+        .share-option:focus {
+            outline: 3px solid #36069A;
+            outline-offset: 2px;
+        }
+
+        .share-icon {
+            font-size: 1.5rem;
+            width: 2rem;
+            text-align: center;
+        }
+
+        .share-text {
+            color: #212529;
+        }
+
+        .share-option[data-platform="twitter"]:hover {
+            border-color: #1da1f2;
+            color: #1da1f2;
+        }
+
+        .share-option[data-platform="facebook"]:hover {
+            border-color: #4267b2;
+            color: #4267b2;
+        }
+
+        .share-option[data-platform="linkedin"]:hover {
+            border-color: #0077b5;
+            color: #0077b5;
+        }
+
+        .share-option[data-platform="email"]:hover {
+            border-color: #DE6399;
+            color: #DE6399;
+        }
+
+        .share-option[data-platform="copy"]:hover {
+            border-color: #28a745;
+            color: #28a745;
+        }
+
+        .share-message {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        .share-message.success {
+            background: #d1f2eb;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .share-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f1b0b7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1>Patient Stories</h1>
+            <p>Real stories from real patients at different stages of their treatment journey. Find inspiration, hope, and connection through shared experiences.</p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-icon stories">6</div>
+                    <div class="stat-label">Patient Stories</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon videos">3</div>
+                    <div class="stat-label">Video Stories</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon survivors">1</div>
+                    <div class="stat-label">Long-term Survivors</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search and Filter Section -->
+        <section class="search-filter-section">
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Search stories by keywords, location, or experience..." aria-label="Search patient stories">
+            </div>
+
+            <div class="filter-pills">
+                <button class="pill active" data-filter="all">
+                    All Stories <span class="pill-count">6</span>
+                </button>
+                <button class="pill" data-filter="newly-diagnosed">
+                    Newly Diagnosed <span class="pill-count">2</span>
+                </button>
+                <button class="pill" data-filter="post-progression">
+                    Post-Progression <span class="pill-count">1</span>
+                </button>
+                <button class="pill" data-filter="maintenance">
+                    Maintenance Therapy <span class="pill-count">1</span>
+                </button>
+                <button class="pill" data-filter="remission">
+                    In Remission <span class="pill-count">1</span>
+                </button>
+                <button class="pill" data-filter="survivor">
+                    Long-term Survivor <span class="pill-count">1</span>
+                </button>
+            </div>
+
+            <div class="advanced-filters">
+                <div class="advanced-filters-toggle" role="button" tabindex="0" aria-expanded="false">
+                    <span>🔧</span>
+                    Advanced Filters
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label class="filter-label" for="age-filter">Age Range</label>
+                        <select class="filter-select" id="age-filter">
+                            <option value="all">All Ages</option>
+                            <option value="18-35">18-35 years</option>
+                            <option value="36-50">36-50 years</option>
+                            <option value="51-65">51-65 years</option>
+                            <option value="65+">65+ years</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label" for="story-type-filter">Story Type</label>
+                        <select class="filter-select" id="story-type-filter">
+                            <option value="all">All Types</option>
+                            <option value="video">Video Stories</option>
+                            <option value="written">Written Stories</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Count -->
+        <div class="results-count">
+            Showing <span id="results-count">6</span> of <span id="total-count">6</span> patient stories
+        </div>
+
+        <!-- Stories Grid -->
+        <main class="stories-grid" id="stories-grid">
+            <!-- Story cards will be dynamically populated -->
+        </main>
+
+        <!-- Share Your Story CTA -->
+        <section class="share-cta">
+            <h2>Share Your Story</h2>
+            <p>Your experience could inspire and help others on their journey. Consider sharing your story to build our community of hope and support.</p>
+            <button class="cta-button">Share Your Story</button>
+        </section>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="story-modal" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+        <div class="modal-content" tabindex="-1">
+            <div class="modal-header">
+                <button class="modal-close" aria-label="Close story details">&times;</button>
+                <h2 class="modal-title" id="modal-title">Story Title</h2>
+                <div class="modal-subtitle">
+                    <span id="modal-location">📍 Location</span>
+                    <span id="modal-timeline">📅 Timeline</span>
+                    <span id="modal-badges"></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div id="modal-video" class="video-placeholder" style="display: none;">
+                    <div class="play-button">▶</div>
+                </div>
+                
+                <div class="journey-section">
+                    <h3 class="journey-title">
+                        ❤️ Patient Journey
+                    </h3>
+                    <div class="journey-text" id="modal-journey-text">
+                        Journey text will appear here...
+                    </div>
+                </div>
+
+                <div class="patient-details-grid">
+                    <div class="detail-card age">
+                        <div class="detail-label">Age</div>
+                        <div class="detail-value" id="modal-age">--</div>
+                    </div>
+                    <div class="detail-card status">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value" id="modal-status">--</div>
+                    </div>
+                    <div class="detail-card stage">
+                        <div class="detail-label">Journey Stage</div>
+                        <div class="detail-value" id="modal-stage">--</div>
+                    </div>
+                </div>
+
+                <div class="teachings">
+                    <h4>What This Story Teaches Us</h4>
+                    <ul id="modal-teachings">
+                        <!-- Teachings will be populated here -->
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="action-button secondary" id="share-story-btn" aria-expanded="false" aria-controls="share-panel">Share This Story</button>
+                <button class="action-button primary">Find Similar Stories</button>
+            </div>
+            
+            <!-- Share Options Panel -->
+            <div class="share-panel" id="share-panel" style="display: none;">
+                <div class="share-header">
+                    <h4>Share This Inspiring Story</h4>
+                    <p>Help others find hope by sharing this patient's journey</p>
+                </div>
+                <div class="share-options">
+                    <button class="share-option" data-platform="twitter">
+                        <span class="share-icon">🐦</span>
+                        <span class="share-text">Share on Twitter</span>
+                    </button>
+                    <button class="share-option" data-platform="facebook">
+                        <span class="share-icon">📘</span>
+                        <span class="share-text">Share on Facebook</span>
+                    </button>
+                    <button class="share-option" data-platform="linkedin">
+                        <span class="share-icon">💼</span>
+                        <span class="share-text">Share on LinkedIn</span>
+                    </button>
+                    <button class="share-option" data-platform="email">
+                        <span class="share-icon">✉️</span>
+                        <span class="share-text">Share via Email</span>
+                    </button>
+                    <button class="share-option" data-platform="copy">
+                        <span class="share-icon">🔗</span>
+                        <span class="share-text">Copy Link</span>
+                    </button>
+                </div>
+                <div class="share-message" id="share-message" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data - in a real application, this would come from an API
+        const storiesData = [
+            {
+                id: 1,
+                name: "Sarah M.",
+                age: 45,
+                location: "Portland, OR",
+                type: "video",
+                stage: "stage",
+                stageLabel: "Stage II",
+                timeline: "3 months ago",
+                excerpt: "When I was first diagnosed, I felt overwhelmed. But with the right support and treatment plan, I found hope again.",
+                journey: "When I was first diagnosed, I felt overwhelmed. But with the right support and treatment plan, I found hope again. My medical team has been incredible throughout this journey.",
+                status: "Progressive",
+                fullStage: "Stage II Treatment",
+                teachings: [
+                    "Early intervention makes a significant difference",
+                    "Having a strong support system is crucial",
+                    "Staying positive while being realistic helps"
+                ],
+                filter: "newly-diagnosed",
+                ageGroup: "36-50"
+            },
+            {
+                id: 2,
+                name: "Michael R.",
+                age: 58,
+                location: "Austin, TX",
+                type: "story",
+                stage: "progressive",
+                stageLabel: "Progressive",
+                timeline: "8 months into treatment",
+                excerpt: "After my progression, I thought my journey was over. But my medical team introduced me to new treatment options that have given me more quality time with my family.",
+                journey: "After my progression, I thought my journey was over. But my medical team introduced me to new treatment options that have given me more quality time with my family. Each day is a gift now.",
+                status: "In Treatment",
+                fullStage: "Post-Progression",
+                teachings: [
+                    "New treatments are always being developed",
+                    "Quality of life can be maintained during treatment",
+                    "Family support makes all the difference"
+                ],
+                filter: "post-progression",
+                ageGroup: "51-65"
+            },
+            {
+                id: 3,
+                name: "Jennifer L.",
+                age: 39,
+                location: "Miami, FL",
+                type: "video",
+                stage: "stable",
+                stageLabel: "Stable",
+                timeline: "2 years on maintenance",
+                excerpt: "Maintenance therapy has allowed me to live my life while staying on top of my condition. I can work, travel, and be present for my children.",
+                journey: "Maintenance therapy has allowed me to live my life while staying on top of my condition. I can work, travel, and be present for my children. It's about finding the right balance.",
+                status: "Stable",
+                fullStage: "Maintenance Therapy",
+                teachings: [
+                    "Maintenance therapy can provide stability",
+                    "Life can continue during treatment",
+                    "Regular monitoring brings peace of mind"
+                ],
+                filter: "maintenance",
+                ageGroup: "36-50"
+            },
+            {
+                id: 4,
+                name: "David K.",
+                age: 62,
+                location: "Denver, CO",
+                type: "story",
+                stage: "early",
+                stageLabel: "Early Stage",
+                timeline: "6 months ago",
+                excerpt: "The diagnosis was scary, but my care team walked me through every step. Understanding my options and having a clear treatment plan gave me confidence.",
+                journey: "The diagnosis was scary, but my care team walked me through every step. Understanding my options and having a clear treatment plan gave me confidence. Knowledge is power in this journey.",
+                status: "In Treatment",
+                fullStage: "Early Stage",
+                teachings: [
+                    "Understanding your treatment options reduces anxiety",
+                    "Communication with your care team is essential",
+                    "Taking it one step at a time helps"
+                ],
+                filter: "newly-diagnosed",
+                ageGroup: "51-65"
+            },
+            {
+                id: 5,
+                name: "Lisa T.",
+                age: 51,
+                location: "Chicago, IL",
+                type: "video",
+                stage: "remission",
+                stageLabel: "In Remission",
+                timeline: "1 year in remission",
+                excerpt: "Being in remission feels like getting my life back. I never take a single day for granted now.",
+                journey: "Being in remission feels like getting my life back. I never take a single day for granted now. Every milestone is a celebration, and I've learned to appreciate the small moments.",
+                status: "In Remission",
+                fullStage: "Remission",
+                teachings: [
+                    "Every patient's journey is unique and valuable",
+                    "Hope and support make a meaningful difference",
+                    "Sharing experiences helps build a stronger community"
+                ],
+                filter: "remission",
+                ageGroup: "51-65"
+            },
+            {
+                id: 6,
+                name: "Robert H.",
+                age: 67,
+                location: "Seattle, WA",
+                type: "story",
+                stage: "survivor",
+                stageLabel: "10-Year Survivor",
+                timeline: "Diagnosed 2014",
+                excerpt: "It's been 10 years since my diagnosis, and I'm here to tell others that long-term survival is possible. The key is staying positive, following your treatment plan, and never giving up hope.",
+                journey: "It's been 10 years since my diagnosis, and I'm here to tell others that long-term survival is possible. The key is staying positive, following your treatment plan, and never giving up hope. I've seen so many advances in treatment over the years.",
+                status: "Survivor",
+                fullStage: "10-Year Survivor",
+                teachings: [
+                    "Long-term survival is achievable",
+                    "Consistency with treatment is crucial",
+                    "Maintaining hope throughout the journey matters"
+                ],
+                filter: "survivor",
+                ageGroup: "65+"
+            }
+        ];
+
+        // State management
+        let currentFilter = 'all';
+        let currentAgeFilter = 'all';
+        let currentTypeFilter = 'all';
+        let searchQuery = '';
+        let filteredStories = [...storiesData];
+
+        // DOM elements
+        const storiesGrid = document.getElementById('stories-grid');
+        const searchInput = document.querySelector('.search-input');
+        const filterPills = document.querySelectorAll('.pill');
+        const ageFilter = document.getElementById('age-filter');
+        const typeFilter = document.getElementById('story-type-filter');
+        const resultsCount = document.getElementById('results-count');
+        const totalCount = document.getElementById('total-count');
+        const modal = document.getElementById('story-modal');
+        const advancedFiltersToggle = document.querySelector('.advanced-filters-toggle');
+        const filtersGrid = document.querySelector('.filters-grid');
+        const chevron = document.querySelector('.chevron');
+
+        // Initialize the page
+        function init() {
+            renderStories();
+            updateResultsCount();
+            attachEventListeners();
+            totalCount.textContent = storiesData.length;
+        }
+
+        // Event listeners
+        function attachEventListeners() {
+            // Search input
+            searchInput.addEventListener('input', handleSearch);
+
+            // Filter pills
+            filterPills.forEach(pill => {
+                pill.addEventListener('click', () => handleFilterPill(pill));
+            });
+
+            // Advanced filters
+            ageFilter.addEventListener('change', handleAgeFilter);
+            typeFilter.addEventListener('change', handleTypeFilter);
+
+            // Advanced filters toggle
+            advancedFiltersToggle.addEventListener('click', toggleAdvancedFilters);
+            advancedFiltersToggle.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleAdvancedFilters();
+                }
+            });
+
+            // Modal events
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+
+            document.querySelector('.modal-close').addEventListener('click', closeModal);
+
+            // Escape key to close modal
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    closeModal();
+                }
+            });
+
+            // Share functionality
+            document.addEventListener('click', (e) => {
+                if (e.target.id === 'share-story-btn') {
+                    toggleSharePanel();
+                } else if (e.target.closest('.share-option')) {
+                    const platform = e.target.closest('.share-option').dataset.platform;
+                    handleShare(platform);
+                }
+            });
+        }
+
+        // Toggle advanced filters
+        function toggleAdvancedFilters() {
+            const isExpanded = filtersGrid.classList.contains('active');
+            filtersGrid.classList.toggle('active');
+            chevron.classList.toggle('expanded');
+            advancedFiltersToggle.setAttribute('aria-expanded', !isExpanded);
+        }
+
+        // Handle search
+        function handleSearch(e) {
+            searchQuery = e.target.value.toLowerCase();
+            applyFilters();
+        }
+
+        // Handle filter pills
+        function handleFilterPill(pill) {
+            // Remove active class from all pills
+            filterPills.forEach(p => p.classList.remove('active'));
+            
+            // Add active class to clicked pill
+            pill.classList.add('active');
+            
+            // Update current filter
+            currentFilter = pill.dataset.filter;
+            
+            // Apply filters
+            applyFilters();
+        }
+
+        // Handle age filter
+        function handleAgeFilter(e) {
+            currentAgeFilter = e.target.value;
+            applyFilters();
+        }
+
+        // Handle type filter
+        function handleTypeFilter(e) {
+            currentTypeFilter = e.target.value;
+            applyFilters();
+        }
+
+        // Apply all filters
+        function applyFilters() {
+            filteredStories = storiesData.filter(story => {
+                // Stage filter
+                const stageMatch = currentFilter === 'all' || story.filter === currentFilter;
+                
+                // Age filter
+                const ageMatch = currentAgeFilter === 'all' || story.ageGroup === currentAgeFilter;
+                
+                // Type filter
+                const typeMatch = currentTypeFilter === 'all' || story.type === currentTypeFilter;
+                
+                // Search filter
+                const searchMatch = searchQuery === '' || 
+                    story.name.toLowerCase().includes(searchQuery) ||
+                    story.location.toLowerCase().includes(searchQuery) ||
+                    story.excerpt.toLowerCase().includes(searchQuery) ||
+                    story.journey.toLowerCase().includes(searchQuery);
+                
+                return stageMatch && ageMatch && typeMatch && searchMatch;
+            });
+
+            renderStories();
+            updateResultsCount();
+        }
+
+        // Update results count
+        function updateResultsCount() {
+            resultsCount.textContent = filteredStories.length;
+        }
+
+        // Render stories
+        function renderStories() {
+            if (filteredStories.length === 0) {
+                storiesGrid.innerHTML = `
+                    <div class="loading" style="grid-column: 1 / -1;">
+                        <h3>No stories found</h3>
+                        <p>Try adjusting your filters or search terms.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            storiesGrid.innerHTML = filteredStories.map(story => `
+                <article class="story-card" tabindex="0" role="button" aria-label="Read ${story.name}'s story" data-story-id="${story.id}">
+                    <div class="story-header">
+                        <div class="story-meta">
+                            <div class="patient-info">
+                                <h3>${story.name}</h3>
+                                <div class="patient-details">
+                                    Age ${story.age} • ${story.location}
+                                </div>
+                            </div>
+                            <div class="story-badges">
+                                <span class="badge ${story.type}">${story.type === 'video' ? 'Video' : 'Story'}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${story.type === 'video' ? `
+                        <div class="video-placeholder">
+                            <div class="play-button">▶</div>
+                        </div>
+                    ` : ''}
+
+                    <div class="story-content">
+                        <span class="stage-badge ${story.stage}">● ${story.stageLabel}</span>
+                        <p class="story-excerpt">${story.excerpt}</p>
+                    </div>
+
+                    <div class="story-footer">
+                        <span class="time-stamp">${story.timeline}</span>
+                        <a href="#" class="read-more" onclick="openModal(${story.id}); return false;">
+                            Read Full Story →
+                        </a>
+                    </div>
+                </article>
+            `).join('');
+
+            // Add click and keyboard events to story cards
+            document.querySelectorAll('.story-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('read-more')) {
+                        const storyId = parseInt(card.dataset.storyId);
+                        openModal(storyId);
+                    }
+                });
+
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const storyId = parseInt(card.dataset.storyId);
+                        openModal(storyId);
+                    }
+                });
+            });
+        }
+
+        // Open modal
+        function openModal(storyId) {
+            const story = storiesData.find(s => s.id === storyId);
+            if (!story) return;
+
+            // Populate modal content
+            document.getElementById('modal-title').textContent = `${story.name}'s Story`;
+            document.getElementById('modal-location').textContent = `📍 ${story.location}`;
+            document.getElementById('modal-timeline').textContent = `📅 ${story.timeline}`;
+            document.getElementById('modal-badges').innerHTML = `
+                <span class="badge ${story.type}">${story.type === 'video' ? 'Video Story' : 'Story'}</span>
+                <span class="badge" style="background: #28a745; color: white;">${story.stageLabel}</span>
+            `;
+            
+            document.getElementById('modal-journey-text').textContent = story.journey;
+            document.getElementById('modal-age').textContent = `${story.age} years old`;
+            document.getElementById('modal-status').textContent = story.status;
+            document.getElementById('modal-stage').textContent = story.fullStage;
+
+            // Video section
+            const videoSection = document.getElementById('modal-video');
+            if (story.type === 'video') {
+                videoSection.style.display = 'flex';
+                videoSection.innerHTML = `
+                    <div class="play-button">▶</div>
+                    <div style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); color: white; font-size: 0.9rem; text-align: center;">
+                        Click to play ${story.name}'s video story
+                    </div>
+                `;
+            } else {
+                videoSection.style.display = 'none';
+            }
+
+            // Teachings
+            const teachingsList = document.getElementById('modal-teachings');
+            teachingsList.innerHTML = story.teachings.map(teaching => `<li>${teaching}</li>`).join('');
+
+            // Show modal
+            modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
+            
+            // Focus management
+            const modalContent = document.querySelector('.modal-content');
+            modalContent.focus();
+            
+            // Trap focus in modal
+            trapFocus(modalContent);
+        }
+
+        // Close modal
+        function closeModal() {
+            modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
+            
+            // Reset share panel
+            const sharePanel = document.getElementById('share-panel');
+            const shareBtn = document.getElementById('share-story-btn');
+            sharePanel.style.display = 'none';
+            shareBtn.textContent = 'Share This Story';
+            shareBtn.setAttribute('aria-expanded', 'false');
+            
+            // Return focus to the element that opened the modal
+            const focusedCard = document.querySelector('.story-card:focus');
+            if (focusedCard) {
+                focusedCard.focus();
+            }
+        }
+
+        // Focus trap utility for accessibility
+        function trapFocus(element) {
+            const focusableElements = element.querySelectorAll(
+                'a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select'
+            );
+            const firstFocusableElement = focusableElements[0];
+            const lastFocusableElement = focusableElements[focusableElements.length - 1];
+
+            element.addEventListener('keydown', function(e) {
+                if (e.key === 'Tab') {
+                    if (e.shiftKey) {
+                        if (document.activeElement === firstFocusableElement) {
+                            lastFocusableElement.focus();
+                            e.preventDefault();
+                        }
+                    } else {
+                        if (document.activeElement === lastFocusableElement) {
+                            firstFocusableElement.focus();
+                            e.preventDefault();
+                        }
+                    }
+                }
+            });
+        }
+
+        // Toggle share panel
+        function toggleSharePanel() {
+            const sharePanel = document.getElementById('share-panel');
+            const shareBtn = document.getElementById('share-story-btn');
+            
+            if (sharePanel.style.display === 'none') {
+                sharePanel.style.display = 'block';
+                shareBtn.textContent = 'Hide Share Options';
+                shareBtn.setAttribute('aria-expanded', 'true');
+            } else {
+                sharePanel.style.display = 'none';
+                shareBtn.textContent = 'Share This Story';
+                shareBtn.setAttribute('aria-expanded', 'false');
+            }
+        }
+
+        // Handle sharing
+        function handleShare(platform) {
+            const currentStoryTitle = document.getElementById('modal-title').textContent;
+            const shareMessage = document.getElementById('share-message');
+            const storyUrl = `${window.location.origin}${window.location.pathname}#story-${currentStoryTitle.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`;
+            const shareText = `Inspiring patient story: ${currentStoryTitle}. Find hope and connection through shared experiences.`;
+
+            let shareUrl = '';
+            let success = false;
+
+            switch (platform) {
+                case 'twitter':
+                    shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(storyUrl)}`;
+                    window.open(shareUrl, '_blank', 'width=600,height=400');
+                    success = true;
+                    break;
+
+                case 'facebook':
+                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(storyUrl)}&quote=${encodeURIComponent(shareText)}`;
+                    window.open(shareUrl, '_blank', 'width=600,height=400');
+                    success = true;
+                    break;
+
+                case 'linkedin':
+                    shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(storyUrl)}&title=${encodeURIComponent(currentStoryTitle)}&summary=${encodeURIComponent(shareText)}`;
+                    window.open(shareUrl, '_blank', 'width=600,height=400');
+                    success = true;
+                    break;
+
+                case 'email':
+                    const emailSubject = `Inspiring Patient Story: ${currentStoryTitle}`;
+                    const emailBody = `I wanted to share this inspiring patient story with you:\n\n${shareText}\n\nRead the full story here: ${storyUrl}\n\nBest regards`;
+                    shareUrl = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+                    window.location.href = shareUrl;
+                    success = true;
+                    break;
+
+                case 'copy':
+                    navigator.clipboard.writeText(storyUrl).then(() => {
+                        showShareMessage('Link copied to clipboard! 📋', 'success');
+                    }).catch(() => {
+                        // Fallback for older browsers
+                        const textArea = document.createElement('textarea');
+                        textArea.value = storyUrl;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        try {
+                            document.execCommand('copy');
+                            showShareMessage('Link copied to clipboard! 📋', 'success');
+                        } catch (err) {
+                            showShareMessage('Unable to copy link. Please copy manually: ' + storyUrl, 'error');
+                        }
+                        document.body.removeChild(textArea);
+                    });
+                    return; // Don't show the default success message
+            }
+
+            if (success) {
+                showShareMessage(`Opening ${platform.charAt(0).toUpperCase() + platform.slice(1)} to share this story! 🚀`, 'success');
+            }
+        }
+
+        // Show share message
+        function showShareMessage(message, type) {
+            const shareMessage = document.getElementById('share-message');
+            shareMessage.textContent = message;
+            shareMessage.className = `share-message ${type}`;
+            shareMessage.style.display = 'block';
+
+            // Hide message after 4 seconds
+            setTimeout(() => {
+                shareMessage.style.display = 'none';
+            }, 4000);
+        }
+
+        // Initialize the application
+        init();
+
+        // Announce page updates for screen readers
+        function announceUpdate(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.setAttribute('aria-atomic', 'true');
+            announcement.className = 'sr-only';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+            
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 1000);
+        }
+
+        // Add announcements for filter changes
+        const originalApplyFilters = applyFilters;
+        applyFilters = function() {
+            originalApplyFilters();
+            announceUpdate(`Showing ${filteredStories.length} of ${storiesData.length} patient stories`);
+        };
+    </script>
+</body>
+</html>
